@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace LLM\Agents\LLM\Prompt\Chat;
 
 use LLM\Agents\LLM\Prompt\MessageInterface;
+use LLM\Agents\LLM\Prompt\SerializableInterface;
 use LLM\Agents\LLM\Response\ToolCall;
 
-final class ToolCalledPrompt implements MessageInterface
+final class ToolCalledPrompt implements MessageInterface, SerializableInterface
 {
     /** @param ToolCall[] $tools */
     public function __construct(

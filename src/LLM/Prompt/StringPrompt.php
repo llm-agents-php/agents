@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LLM\Agents\LLM\Prompt;
 
-class StringPrompt implements StringPromptInterface
+class StringPrompt implements StringPromptInterface, SerializableInterface
 {
     private ?string $cachedPrompt = null;
 

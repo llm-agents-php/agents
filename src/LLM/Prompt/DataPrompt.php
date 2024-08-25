@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LLM\Agents\LLM\Prompt;
 
-class DataPrompt implements StringPromptInterface
+class DataPrompt implements StringPromptInterface, SerializableInterface
 {
     public function __construct(
         protected array $variables = [],

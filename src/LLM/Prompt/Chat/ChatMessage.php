@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace LLM\Agents\LLM\Prompt\Chat;
 
 use LLM\Agents\LLM\Prompt\MessageInterface;
+use LLM\Agents\LLM\Prompt\SerializableInterface;
 
-readonly class ChatMessage implements MessageInterface, HasRoleInterface
+readonly class ChatMessage implements MessageInterface, HasRoleInterface, SerializableInterface
 {
     public function __construct(
         public string|array $content,
