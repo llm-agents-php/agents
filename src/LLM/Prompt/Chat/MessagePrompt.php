@@ -7,10 +7,11 @@ namespace LLM\Agents\LLM\Prompt\Chat;
 use LLM\Agents\LLM\Prompt\DataPrompt;
 use LLM\Agents\LLM\Prompt\FormatterInterface;
 use LLM\Agents\LLM\Prompt\FString;
+use LLM\Agents\LLM\Prompt\SerializableInterface;
 use LLM\Agents\LLM\Prompt\StringPrompt;
 use LLM\Agents\LLM\Prompt\StringPromptInterface;
 
-final readonly class MessagePrompt implements StringPromptInterface, HasRoleInterface
+final readonly class MessagePrompt implements StringPromptInterface, HasRoleInterface, SerializableInterface
 {
     public static function system(
         StringPromptInterface|string|\Stringable $prompt,
