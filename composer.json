@@ -1,5 +1,5 @@
 {
-  "name": "llm-agents-php/agents",
+  "name": "llm-agents/agents",
   "description": "LLM Agents PHP SDK",
   "require": {
     "php": "^8.3",
