@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LLM\Agents\LLM;
 
-interface OptionsInterface
+interface OptionsInterface extends \IteratorAggregate
 {
     public function has(string $option): bool;
 
