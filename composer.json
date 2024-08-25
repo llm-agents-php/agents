@@ -1,0 +1,28 @@
+{
+  "name": "llm-agents-php/agents",
+  "description": "LLM Agents PHP SDK",
+  "require": {
+    "php": "^8.3",
+    "ramsey/uuid": "^4.7",
+    "spiral/json-schema-generator": "^1.0",
+    "cuyz/valinor": "^1.12"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^11.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "LLM\\Agents\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "LLM\\Agents\\Tests\\": "tests/src"
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
