@@ -11,4 +11,6 @@ interface OptionsInterface extends \IteratorAggregate
     public function get(string $option, mixed $default = null): mixed;
 
     public function with(string $option, mixed $value): static;
+
+    public function merge(OptionsInterface $options): static;
 }

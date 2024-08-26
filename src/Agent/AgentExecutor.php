@@ -9,6 +9,7 @@ use LLM\Agents\LLM\ContextFactoryInterface;
 use LLM\Agents\LLM\ContextInterface;
 use LLM\Agents\LLM\LLMInterface;
 use LLM\Agents\LLM\OptionsFactoryInterface;
+use LLM\Agents\LLM\OptionsInterface;
 use LLM\Agents\LLM\Prompt\Chat\Prompt;
 use LLM\Agents\LLM\Prompt\Tool;
 use LLM\Agents\LLM\Response\ChatResponse;
@@ -34,6 +35,7 @@ final readonly class AgentExecutor
         string $agent,
         string|\Stringable|Prompt $prompt,
         ?ContextInterface $context = null,
+        ?OptionsInterface $options = null,
         ?array $sessionContext = null,
     ): Execution {
         $agent = $this->agents->get($agent);
@@ -51,7 +53,7 @@ final readonly class AgentExecutor
             $agent->getTools(),
         );
 
-        $options = $this->optionsFactory
+        $defaultOptions = $this->optionsFactory
             ->create()
             ->with('model', $model->name)
             ->with(
@@ -66,6 +68,12 @@ final readonly class AgentExecutor
                     $tools,
                 ),
             );
+
+        if ($options === null) {
+            $options = $defaultOptions;
+        } else {
+            $options = $defaultOptions->merge($options);
+        }
 
         foreach ($agent->getConfiguration() as $configuration) {
             $options = $options->with($configuration->key, $configuration->content);
