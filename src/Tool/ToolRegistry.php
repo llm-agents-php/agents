@@ -8,7 +8,9 @@ use LLM\Agents\Tool\Exception\ToolNotFoundException;
 
 final class ToolRegistry implements ToolRegistryInterface, ToolRepositoryInterface
 {
-    /** @var array<ToolInterface> */
+    /**
+     * @var array<ToolInterface>
+     */
     private array $tools = [];
 
     public function register(ToolInterface ...$tools): void

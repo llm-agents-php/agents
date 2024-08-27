@@ -6,5 +6,4 @@ namespace LLM\Agents\LLM\Prompt;
 
 interface MessageInterface
 {
-
 }

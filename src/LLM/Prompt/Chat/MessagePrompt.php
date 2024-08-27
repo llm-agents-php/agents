@@ -10,15 +10,25 @@ use LLM\Agents\LLM\Prompt\FString;
 use LLM\Agents\LLM\Prompt\SerializableInterface;
 use LLM\Agents\LLM\Prompt\StringPrompt;
 use LLM\Agents\LLM\Prompt\StringPromptInterface;
+use Stringable;
+
+use function is_string;
 
 final readonly class MessagePrompt implements StringPromptInterface, HasRoleInterface, SerializableInterface
 {
+    public function __construct(
+        private StringPromptInterface $prompt,
+        public Role $role = Role::User,
+        private array $with = [],
+    ) {
+    }
+
     public static function system(
-        StringPromptInterface|string|\Stringable $prompt,
+        StringPromptInterface|string|Stringable $prompt,
         array $values = [],
         array $with = [],
     ): self {
-        if (\is_string($prompt)) {
+        if (is_string($prompt)) {
             $prompt = new StringPrompt($prompt);
         }
 
@@ -26,11 +36,11 @@ final readonly class MessagePrompt implements StringPromptInterface, HasRoleInte
     }
 
     public static function user(
-        StringPromptInterface|string|\Stringable $prompt,
+        StringPromptInterface|string|Stringable $prompt,
         array $values = [],
         array $with = [],
     ): self {
-        if (\is_string($prompt)) {
+        if (is_string($prompt)) {
             $prompt = new StringPrompt($prompt);
         }
 
@@ -38,11 +48,11 @@ final readonly class MessagePrompt implements StringPromptInterface, HasRoleInte
     }
 
     public static function assistant(
-        StringPromptInterface|string|\Stringable $prompt,
+        StringPromptInterface|string|Stringable $prompt,
         array $values = [],
         array $with = [],
     ): self {
-        if (\is_string($prompt)) {
+        if (is_string($prompt)) {
             $prompt = new StringPrompt($prompt);
         }
 
@@ -66,18 +76,12 @@ final readonly class MessagePrompt implements StringPromptInterface, HasRoleInte
         );
     }
 
-    public function __construct(
-        private StringPromptInterface $prompt,
-        public Role $role = Role::User,
-        private array $with = [],
-    ) {}
-
     public function toChatMessage(array $parameters = []): ?ChatMessage
     {
         $prompt = $this->prompt;
 
         foreach ($this->with as $var) {
-            if (!isset($parameters[$var]) || empty($parameters[$var])) {
+            if (! isset($parameters[$var]) || empty($parameters[$var])) {
                 // condition failed
                 return null;
             }
