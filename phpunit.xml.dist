@@ -14,8 +14,8 @@
         <bootstrap class="Ergebnis\PHPUnit\SlowTestDetector\Extension"/>
     </extensions>
     <testsuites>
-        <testsuite name="Functional Tests">
-            <directory>tests/src/Functional</directory>
+        <testsuite name="Unit Tests">
+            <directory>tests/src/Unit</directory>
         </testsuite>
     </testsuites>
     <coverage>
