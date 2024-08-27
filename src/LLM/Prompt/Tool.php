@@ -13,5 +13,6 @@ readonly class Tool
         public bool $enabled = true,
         public bool $strict = true,
         public bool $additionalProperties = false,
-    ) {}
+    ) {
+    }
 }

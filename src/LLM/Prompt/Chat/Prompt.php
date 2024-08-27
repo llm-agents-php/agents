@@ -10,6 +10,12 @@ use LLM\Agents\LLM\Prompt\FString;
 use LLM\Agents\LLM\Prompt\MessageInterface;
 use LLM\Agents\LLM\Prompt\SerializableInterface;
 
+use function array_map;
+use function array_merge;
+use function count;
+use function json_encode;
+use function sprintf;
+
 final class Prompt implements PromptInterface
 {
     public function __construct(
@@ -18,16 +24,33 @@ final class Prompt implements PromptInterface
         protected array $variables = [],
     ) {
         foreach ($this->messages as $message) {
-            if (!$message instanceof MessageInterface) {
-                throw new PromptException(\sprintf('Messages must be of type %s.', MessageInterface::class));
+            if (! $message instanceof MessageInterface) {
+                throw new PromptException(sprintf('Messages must be of type %s.', MessageInterface::class));
             }
         }
+    }
+
+    public static function fromArray(
+        array $data,
+        FormatterInterface $formatter = new FString(),
+    ): self {
+        if ($data === []) {
+            return new self();
+        }
+
+        $messages = array_map(
+            static fn (array $message) => $message['class']::fromArray($message['data'], $formatter),
+            $data['messages'],
+        );
+
+        return new self($messages, $data['variables'] ?? []);
     }
 
     public function withValues(array $values): self
     {
         $prompt = clone $this;
-        $prompt->variables = \array_merge($this->variables, $values);
+        $prompt->variables = array_merge($this->variables, $values);
+
         return $prompt;
     }
 
@@ -35,6 +58,7 @@ final class Prompt implements PromptInterface
     {
         $prompt = clone $this;
         $prompt->messages[] = $message;
+
         return $prompt;
     }
 
@@ -45,7 +69,7 @@ final class Prompt implements PromptInterface
 
     public function format(array $variables = []): array
     {
-        $variables = \array_merge($this->variables, $variables);
+        $variables = array_merge($this->variables, $variables);
 
         $result = [];
         foreach ($this->messages as $message) {
@@ -66,19 +90,19 @@ final class Prompt implements PromptInterface
 
     public function __toString(): string
     {
-        return \json_encode($this->format());
+        return json_encode($this->format());
     }
 
     public function count(): int
     {
-        return \count($this->messages);
+        return count($this->messages);
     }
 
     public function toArray(): array
     {
         $result = [
-            'messages' => \array_map(
-                static fn(SerializableInterface $message) => [
+            'messages' => array_map(
+                static fn (SerializableInterface $message) => [
                     'class' => $message::class,
                     'data' => $message->toArray(),
                 ],
@@ -86,26 +110,10 @@ final class Prompt implements PromptInterface
             ),
         ];
 
-        if (!empty($this->variables)) {
+        if (! empty($this->variables)) {
             $result['variables'] = $this->variables;
         }
 
         return $result;
-    }
-
-    public static function fromArray(
-        array $data,
-        FormatterInterface $formatter = new FString(),
-    ): self {
-        if ($data === []) {
-            return new self();
-        }
-
-        $messages = \array_map(
-            static fn(array $message) => $message['class']::fromArray($message['data'], $formatter),
-            $data['messages'],
-        );
-
-        return new self($messages, $data['variables'] ?? []);
     }
 }
