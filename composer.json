@@ -1,27 +1,106 @@
 {
-  "name": "llm-agents/agents",
-  "description": "LLM Agents PHP SDK",
-  "license": "MIT",
-  "require": {
-    "php": "^8.3",
-    "ramsey/uuid": "^4.7"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "^11.3"
-  },
-  "autoload": {
-    "psr-4": {
-      "LLM\\Agents\\": "src"
+    "name": "llm-agents/agents",
+    "description": "LLM Agents PHP SDK - Autonomous Language Model Agents for PHP",
+    "license": "MIT",
+    "type": "library",
+    "keywords": [
+        "php",
+        "agent",
+        "openai",
+        "gpt4",
+        "generative-ai",
+        "langchain",
+        "autophp",
+        "genai",
+        "laravel",
+        "symfony"
+    ],
+    "authors": [
+        {
+            "name": "Pavel Buchnev",
+            "email": "butschster@gmail.com"
+        },
+        {
+            "name": "the dev",
+            "email": "the@wayof.dev"
+        }
+    ],
+    "homepage": "https://github.com/llm-agents-php",
+    "support": {
+        "issues": "https://github.com//llm-agents-php/agents/issues",
+        "source": "https://github.com//llm-agents-php/agents",
+        "security": "https://github.com//llm-agents-php/agents/blob/master/.github/SECURITY.md"
+    },
+    "require": {
+        "php": "^8.3",
+        "ramsey/uuid": "^4.7",
+        "spiral/json-schema-generator": "^1.0",
+        "cuyz/valinor": "^1.12"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.3",
+        "wayofdev/cs-fixer-config": "^1.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "LLM\\Agents\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LLM\\Agents\\Tests\\": "tests/src"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true,
+            "infection/extension-installer": true,
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        },
+        "audit": {
+            "abandoned": "report"
+        },
+        "sort-packages": true
+    },
+    "extra": {
+        "composer-normalize": {
+            "indent-size": 4,
+            "indent-style": "space"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "cs:diff": "php-cs-fixer fix --dry-run -v --diff",
+        "cs:fix": "php-cs-fixer fix -v",
+        "infect": [
+            "@putenv XDEBUG_MODE=coverage",
+            "roave-infection-static-analysis-plugin"
+        ],
+        "infect:ci": [
+            "@putenv XDEBUG_MODE=coverage",
+            "roave-infection-static-analysis-plugin --ansi --logger-github --ignore-msi-with-no-mutations --only-covered"
+        ],
+        "psalm": "psalm --show-info=true",
+        "psalm:baseline": "psalm --set-baseline=psalm-baseline.xml",
+        "psalm:ci": "psalm --output-format=github --shepherd --show-info=false --stats --threads=4",
+        "refactor": "rector process --config=rector.php",
+        "refactor:ci": "rector process --config=rector.php --dry-run --ansi",
+        "stan": "phpstan analyse --memory-limit=2G",
+        "stan:baseline": "phpstan analyse --generate-baseline --memory-limit=2G --allow-empty-baseline",
+        "stan:ci": "phpstan analyse --memory-limit=2G --error-format=github",
+        "test": [
+            "@putenv XDEBUG_MODE=coverage",
+            "pest --color=always"
+        ],
+        "test:arch": [
+            "@putenv XDEBUG_MODE=coverage",
+            "pest --color=always --configuration pest.xml.dist"
+        ],
+        "test:cc": [
+            "@putenv XDEBUG_MODE=coverage",
+            "pest --coverage --coverage-clover=.build/phpunit/logs/clover.xml"
+        ]
     }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "LLM\\Agents\\Tests\\": "tests/src"
-    }
-  },
-  "config": {
-    "sort-packages": true
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true
 }
