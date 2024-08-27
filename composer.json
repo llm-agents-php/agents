@@ -61,7 +61,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "LLM\\Agents\\Tests\\": "tests/src"
+            "LLM\\Tests\\": "tests/src"
         }
     },
     "config": {
