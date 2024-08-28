@@ -9,14 +9,21 @@ use LLM\Agents\LLM\Prompt\FormatterInterface;
 use LLM\Agents\LLM\Prompt\FString;
 use LLM\Agents\LLM\Prompt\MessageInterface;
 use LLM\Agents\LLM\Prompt\SerializableInterface;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 final class Prompt implements PromptInterface
 {
+    private readonly UuidInterface $uuid;
+
     public function __construct(
         /** @var MessageInterface[] */
-        protected array $messages = [],
-        protected array $variables = [],
+        private array $messages = [],
+        private array $variables = [],
+        ?UuidInterface $uuid = null,
     ) {
+        $this->uuid = $uuid ?? Uuid::uuid4();
+
         foreach ($this->messages as $message) {
             if (!$message instanceof MessageInterface) {
                 throw new PromptException(\sprintf('Messages must be of type %s.', MessageInterface::class));
@@ -84,6 +91,7 @@ final class Prompt implements PromptInterface
                 ],
                 $this->messages,
             ),
+            'uuid' => $this->getUuid()->toString(),
         ];
 
         if (!empty($this->variables)) {
@@ -106,6 +114,17 @@ final class Prompt implements PromptInterface
             $data['messages'],
         );
 
-        return new self($messages, $data['variables'] ?? []);
+        $uuid = ($messages['uuid'] ?? null) ? Uuid::fromString($messages['uuid']) : null;
+
+        return new self(
+            messages: $messages,
+            variables: $data['variables'] ?? [],
+            uuid: $uuid,
+        );
+    }
+
+    public function getUuid(): UuidInterface
+    {
+        return $this->uuid;
     }
 }

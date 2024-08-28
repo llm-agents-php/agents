@@ -4,11 +4,19 @@ declare(strict_types=1);
 
 namespace LLM\Agents\LLM\Prompt;
 
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
+
 class DataPrompt implements StringPromptInterface, SerializableInterface
 {
+    public readonly UuidInterface $uuid;
+
     public function __construct(
         protected array $variables = [],
-    ) {}
+        ?UuidInterface $uuid = null,
+    ) {
+        $this->uuid = $uuid ?? Uuid::uuid4();
+    }
 
     /**
      * Creates new prompt with altered values.
@@ -36,11 +44,22 @@ class DataPrompt implements StringPromptInterface, SerializableInterface
      */
     public function toArray(): array
     {
-        return $this->variables;
+        return [
+            'variables' => $this->variables,
+            'uuid' => $this->uuid->toString(),
+        ];
     }
 
     public static function fromArray(array $data): static
     {
-        return new static($data);
+        return new static(
+            variables: $data['variables'],
+            uuid: Uuid::fromString($data['uuid']),
+        );
+    }
+
+    public function getUuid(): UuidInterface
+    {
+        return $this->uuid;
     }
 }

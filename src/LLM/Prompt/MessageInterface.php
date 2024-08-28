@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace LLM\Agents\LLM\Prompt;
 
+use Ramsey\Uuid\UuidInterface;
+
 interface MessageInterface
 {
-
+    public function getUuid(): UuidInterface;
 }

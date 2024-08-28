@@ -10,43 +10,65 @@ use LLM\Agents\LLM\Prompt\FString;
 use LLM\Agents\LLM\Prompt\SerializableInterface;
 use LLM\Agents\LLM\Prompt\StringPrompt;
 use LLM\Agents\LLM\Prompt\StringPromptInterface;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 final readonly class MessagePrompt implements StringPromptInterface, HasRoleInterface, SerializableInterface
 {
+    public UuidInterface $uuid;
+
     public static function system(
         StringPromptInterface|string|\Stringable $prompt,
         array $values = [],
         array $with = [],
+        ?UuidInterface $uuid = null,
     ): self {
         if (\is_string($prompt)) {
             $prompt = new StringPrompt($prompt);
         }
 
-        return new self($prompt->withValues($values), Role::System, $with);
+        return new self(
+            prompt: $prompt->withValues($values),
+            role: Role::System,
+            with: $with,
+            uuid: $uuid,
+        );
     }
 
     public static function user(
         StringPromptInterface|string|\Stringable $prompt,
         array $values = [],
         array $with = [],
+        ?UuidInterface $uuid = null,
     ): self {
         if (\is_string($prompt)) {
             $prompt = new StringPrompt($prompt);
         }
 
-        return new self($prompt->withValues($values), Role::User, $with);
+        return new self(
+            prompt: $prompt->withValues($values),
+            role: Role::User,
+            with: $with,
+            uuid: $uuid,
+        );
     }
 
     public static function assistant(
         StringPromptInterface|string|\Stringable $prompt,
         array $values = [],
         array $with = [],
+        ?UuidInterface $uuid = null,
     ): self {
         if (\is_string($prompt)) {
             $prompt = new StringPrompt($prompt);
         }
 
-        return new self($prompt->withValues($values), Role::Assistant, $with);
+        return new self(
+            prompt: $prompt->withValues($values),
+            role: Role::Assistant,
+            with: $with,
+            uuid: $uuid,
+        );
     }
 
     public static function fromArray(array $data, FormatterInterface $formatter = new FString()): self
@@ -55,14 +77,16 @@ final readonly class MessagePrompt implements StringPromptInterface, HasRoleInte
 
         if (isset($prompt['template'])) {
             return new self(
-                StringPrompt::fromArray($prompt, $formatter),
-                Role::fromValue($data['role']),
+                prompt: StringPrompt::fromArray($prompt, $formatter),
+                role: Role::fromValue($data['role']),
+                uuid: Uuid::fromString($data['uuid']),
             );
         }
 
         return new self(
-            DataPrompt::fromArray($prompt),
-            Role::fromValue($data['role']),
+            prompt: DataPrompt::fromArray($prompt),
+            role: Role::fromValue($data['role']),
+            uuid: Uuid::fromString($data['uuid']),
         );
     }
 
@@ -70,7 +94,10 @@ final readonly class MessagePrompt implements StringPromptInterface, HasRoleInte
         private StringPromptInterface $prompt,
         public Role $role = Role::User,
         private array $with = [],
-    ) {}
+        ?UuidInterface $uuid = null,
+    ) {
+        $this->uuid = $uuid ?? Uuid::uuid4();
+    }
 
     public function toChatMessage(array $parameters = []): ?ChatMessage
     {
@@ -84,14 +111,19 @@ final readonly class MessagePrompt implements StringPromptInterface, HasRoleInte
         }
 
         return new ChatMessage(
-            $prompt instanceof DataPrompt ? $prompt->toArray() : $prompt->format($parameters),
-            $this->role,
+            content: $prompt instanceof DataPrompt ? $prompt->toArray() : $prompt->format($parameters),
+            role: $this->role,
+            uuid: $this->uuid,
         );
     }
 
     public function withValues(array $values): self
     {
-        return new self($this->prompt->withValues($values), $this->role);
+        return new self(
+            prompt: $this->prompt->withValues($values),
+            role: $this->role,
+            uuid: $this->uuid,
+        );
     }
 
     public function format(array $variables = []): string
@@ -109,11 +141,17 @@ final readonly class MessagePrompt implements StringPromptInterface, HasRoleInte
         return [
             'prompt' => $this->prompt->toArray(),
             'role' => $this->role->value,
+            'uuid' => $this->uuid->toString(),
         ];
     }
 
     public function getRole(): Role
     {
         return $this->role;
+    }
+
+    public function getUuid(): UuidInterface
+    {
+        return $this->uuid;
     }
 }

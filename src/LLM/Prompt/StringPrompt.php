@@ -4,16 +4,22 @@ declare(strict_types=1);
 
 namespace LLM\Agents\LLM\Prompt;
 
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
+
 class StringPrompt implements StringPromptInterface, SerializableInterface
 {
     private ?string $cachedPrompt = null;
+    public readonly UuidInterface $uuid;
 
     public function __construct(
         protected string $template,
         protected array $variables = [],
         protected FormatterInterface $formatter = new FString(),
+        ?UuidInterface $uuid = null,
     ) {
         $this->template = \trim($this->template);
+        $this->uuid = $uuid ?? Uuid::uuid4();
     }
 
     public function withValues(array $values): self
@@ -51,6 +57,7 @@ class StringPrompt implements StringPromptInterface, SerializableInterface
     {
         $result = [
             'template' => $this->template,
+            'uuid' => $this->uuid->toString(),
         ];
 
         if ($this->variables !== []) {
@@ -62,6 +69,16 @@ class StringPrompt implements StringPromptInterface, SerializableInterface
 
     public static function fromArray(array $data, FormatterInterface $formatter = new FString()): static
     {
-        return new static($data['template'], $data['variables'] ?? [], $formatter);
+        return new static(
+            template: $data['template'],
+            variables: $data['variables'] ?? [],
+            formatter: $formatter,
+            uuid: Uuid::fromString($data['uuid']),
+        );
+    }
+
+    public function getUuid(): UuidInterface
+    {
+        return $this->uuid;
     }
 }
