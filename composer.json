@@ -1,6 +1,7 @@
 {
   "name": "llm-agents/agents",
   "description": "LLM Agents PHP SDK",
+  "license": "MIT",
   "require": {
     "php": "^8.3",
     "ramsey/uuid": "^4.7",
