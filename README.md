@@ -4,6 +4,9 @@ LLM Agents is a powerful PHP library for building and managing Language Model (L
 a flexible and extensible framework for creating autonomous agents that can perform complex tasks, make decisions, and
 interact with various tools and APIs.
 
+> There is an article on Medium where I explaind what is LLM agents: [A PHP dev’s dream: An AI home that really gets you
+](https://butschster.medium.com/a-php-devs-dream-an-ai-home-that-really-gets-you-dd97ae2ca0b0)
+
 [![PHP](https://img.shields.io/packagist/php-v/llm-agents/agents.svg?style=flat-square)](https://packagist.org/packages/llm-agents/agents)
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/llm-agents/agents.svg?style=flat-square)](https://packagist.org/packages/llm-agents/agents)
 [![Total Downloads](https://img.shields.io/packagist/dt/llm-agents/agents.svg?style=flat-square)](https://packagist.org/packages/llm-agents/agents)
