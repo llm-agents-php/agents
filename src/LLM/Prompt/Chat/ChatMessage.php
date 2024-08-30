@@ -12,8 +12,7 @@ readonly class ChatMessage implements MessageInterface, HasRoleInterface, Serial
     public function __construct(
         public string|array $content,
         public Role $role = Role::User,
-    ) {
-    }
+    ) {}
 
     public static function fromArray(array $data): static
     {

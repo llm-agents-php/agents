@@ -18,9 +18,6 @@ use LLM\Agents\Solution\ToolLink;
 use LLM\Agents\Tool\SchemaMapperInterface;
 use LLM\Agents\Tool\ToolInterface;
 use LLM\Agents\Tool\ToolRepositoryInterface;
-use Stringable;
-
-use function array_map;
 
 final readonly class AgentExecutor
 {
@@ -32,12 +29,11 @@ final readonly class AgentExecutor
         private ToolRepositoryInterface $tools,
         private AgentRepositoryInterface $agents,
         private SchemaMapperInterface $schemaMapper,
-    ) {
-    }
+    ) {}
 
     public function execute(
         string $agent,
-        string|Stringable|Prompt $prompt,
+        string|\Stringable|Prompt $prompt,
         ?ContextInterface $context = null,
         ?OptionsInterface $options = null,
         ?array $sessionContext = null,
@@ -52,8 +48,8 @@ final readonly class AgentExecutor
 
         $model = $agent->getModel();
 
-        $tools = array_map(
-            fn (ToolLink $tool): ToolInterface => $this->tools->get($tool->getName()),
+        $tools = \array_map(
+            fn(ToolLink $tool): ToolInterface => $this->tools->get($tool->getName()),
             $agent->getTools(),
         );
 
@@ -62,8 +58,8 @@ final readonly class AgentExecutor
             ->with('model', $model->name)
             ->with(
                 'tools',
-                array_map(
-                    fn (ToolInterface $tool): Tool => new Tool(
+                \array_map(
+                    fn(ToolInterface $tool): Tool => new Tool(
                         name: $tool->getName(),
                         description: $tool->getDescription(),
                         parameters: $this->schemaMapper->toJsonSchema($tool->getInputSchema()),

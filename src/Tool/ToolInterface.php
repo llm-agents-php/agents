@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace LLM\Agents\Tool;
 
-use Stringable;
-
 /**
  * @template T of object
  */
@@ -25,5 +23,5 @@ interface ToolInterface
     /**
      * @param T $input
      */
-    public function execute(object $input): string|Stringable;
+    public function execute(object $input): string|\Stringable;
 }
