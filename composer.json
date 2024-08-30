@@ -33,9 +33,7 @@
     },
     "require": {
         "php": "^8.2",
-        "cuyz/valinor": "^1.12",
-        "ramsey/uuid": "^4.7",
-        "spiral/json-schema-generator": "^1.0"
+        "ramsey/uuid": "^4.7"
     },
     "require-dev": {
         "ergebnis/phpunit-slow-test-detector": "^2.15",
