@@ -12,14 +12,7 @@ readonly class ChatMessage implements MessageInterface, HasRoleInterface, Serial
     public function __construct(
         public string|array $content,
         public Role $role = Role::User,
-    ) {}
-
-    public function toArray(): array
-    {
-        return [
-            'content' => $this->content,
-            'role' => $this->role->value,
-        ];
+    ) {
     }
 
     public static function fromArray(array $data): static
@@ -28,6 +21,14 @@ readonly class ChatMessage implements MessageInterface, HasRoleInterface, Serial
             content: $data['content'],
             role: Role::tryFrom($data['role']),
         );
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'content' => $this->content,
+            'role' => $this->role->value,
+        ];
     }
 
     public function getRole(): Role

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace LLM\Agents\Tool;
 
+use Stringable;
+
 /**
  * @template T of object
  */
@@ -13,7 +15,9 @@ interface ToolInterface
 
     public function getDescription(): string;
 
-    /** @return class-string<T>|string */
+    /**
+     * @return class-string<T>|string
+     */
     public function getInputSchema(): string;
 
     public function getLanguage(): ToolLanguage;
@@ -21,5 +25,5 @@ interface ToolInterface
     /**
      * @param T $input
      */
-    public function execute(object $input): string|\Stringable;
+    public function execute(object $input): string|Stringable;
 }

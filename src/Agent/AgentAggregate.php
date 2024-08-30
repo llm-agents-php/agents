@@ -14,17 +14,23 @@ use LLM\Agents\Solution\SolutionMetadata;
 use LLM\Agents\Solution\SolutionType;
 use LLM\Agents\Solution\ToolLink;
 
+use function array_filter;
+use function array_values;
+
 /**
  * @psalm-type TAssociation = Solution|Model|ToolLink|AgentLink
  */
 class AgentAggregate implements AgentInterface
 {
-    /** @var array<TAssociation> */
+    /**
+     * @var array<TAssociation>
+     */
     private array $associations = [];
 
     public function __construct(
         private readonly Agent $agent,
-    ) {}
+    ) {
+    }
 
     public function getName(): string
     {
@@ -48,17 +54,17 @@ class AgentAggregate implements AgentInterface
 
     public function getTools(): array
     {
-        return \array_filter(
+        return array_filter(
             $this->associations,
-            static fn(Solution $association): bool => $association instanceof ToolLink,
+            static fn (Solution $association): bool => $association instanceof ToolLink,
         );
     }
 
     public function getAgents(): array
     {
-        return \array_filter(
+        return array_filter(
             $this->associations,
-            static fn(Solution $association): bool => $association instanceof AgentLink,
+            static fn (Solution $association): bool => $association instanceof AgentLink,
         );
     }
 
@@ -75,20 +81,20 @@ class AgentAggregate implements AgentInterface
 
     public function getMemory(): array
     {
-        return \array_values(
-            \array_filter(
+        return array_values(
+            array_filter(
                 $this->agent->getMetadata(),
-                static fn(SolutionMetadata $metadata): bool => $metadata->type === MetadataType::Memory,
+                static fn (SolutionMetadata $metadata): bool => $metadata->type === MetadataType::Memory,
             ),
         );
     }
 
     public function getPrompts(): array
     {
-        return \array_values(
-            \array_filter(
+        return array_values(
+            array_filter(
                 $this->agent->getMetadata(),
-                static fn(SolutionMetadata $metadata): bool => $metadata->type === MetadataType::Prompt,
+                static fn (SolutionMetadata $metadata): bool => $metadata->type === MetadataType::Prompt,
             ),
         );
     }
@@ -98,10 +104,10 @@ class AgentAggregate implements AgentInterface
      */
     public function getConfiguration(): array
     {
-        return \array_values(
-            \array_filter(
+        return array_values(
+            array_filter(
                 $this->agent->getMetadata(),
-                static fn(SolutionMetadata $metadata): bool => $metadata->type === MetadataType::Configuration,
+                static fn (SolutionMetadata $metadata): bool => $metadata->type === MetadataType::Configuration,
             ),
         );
     }

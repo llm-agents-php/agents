@@ -12,7 +12,17 @@ final class ToolCall implements SerializableInterface
         public string $id,
         public string $name,
         public string $arguments,
-    ) {}
+    ) {
+    }
+
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            id: $data['id'],
+            name: $data['name'],
+            arguments: $data['arguments'],
+        );
+    }
 
     public function withArguments(string $arguments): self
     {
@@ -26,14 +36,5 @@ final class ToolCall implements SerializableInterface
             'name' => $this->name,
             'arguments' => $this->arguments,
         ];
-    }
-
-    public static function fromArray(array $data): self
-    {
-        return new self(
-            id: $data['id'],
-            name: $data['name'],
-            arguments: $data['arguments'],
-        );
     }
 }

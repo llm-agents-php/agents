@@ -6,5 +6,4 @@ namespace LLM\Agents\Agent\Exception;
 
 final class InvalidBuilderStateException extends AgentException
 {
-
 }

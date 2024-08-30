@@ -13,7 +13,9 @@ interface SchemaMapperInterface
 
     /**
      * @template T of object
+     *
      * @param class-string<T>|string $class
+     *
      * @return T
      */
     public function toObject(string $json, ?string $class = null): object;

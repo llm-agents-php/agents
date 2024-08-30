@@ -12,5 +12,6 @@ final readonly class Execution
     public function __construct(
         public Response $result,
         public PromptInterface $prompt,
-    ) {}
+    ) {
+    }
 }
