@@ -12,6 +12,10 @@
         "langchain",
         "autophp",
         "genai",
+        "anthropic",
+        "claude",
+        "claude-ai",
+        "llm",
         "laravel",
         "symfony"
     ],
