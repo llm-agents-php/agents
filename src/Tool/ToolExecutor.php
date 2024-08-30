@@ -6,10 +6,6 @@ namespace LLM\Agents\Tool;
 
 use LLM\Agents\Tool\Exception\ExecutorNotFoundException;
 use LLM\Agents\Tool\Exception\UnsupportedToolExecutionException;
-use Stringable;
-use Throwable;
-
-use function json_encode;
 
 final class ToolExecutor
 {
@@ -21,15 +17,14 @@ final class ToolExecutor
     public function __construct(
         private readonly ToolRepositoryInterface $tools,
         private readonly SchemaMapperInterface $schemaMapper,
-    ) {
-    }
+    ) {}
 
     public function register(ToolLanguage $language, ExecutorInterface $executor): void
     {
         $this->executors[$language->value] = $executor;
     }
 
-    public function execute(string $tool, string $input): string|Stringable
+    public function execute(string $tool, string $input): string|\Stringable
     {
         $tool = $this->tools->get($tool);
 
@@ -38,8 +33,8 @@ final class ToolExecutor
         if ($tool->getLanguage() === ToolLanguage::PHP) {
             try {
                 return $tool->execute($input);
-            } catch (Throwable $e) {
-                return json_encode([
+            } catch (\Throwable $e) {
+                return \json_encode([
                     'error' => $e->getMessage(),
                 ]);
             }
@@ -54,8 +49,8 @@ final class ToolExecutor
         if ($tool instanceof ExecutorAwareInterface) {
             try {
                 return $tool->setExecutor($executor)->execute($input);
-            } catch (Throwable $e) {
-                return json_encode([
+            } catch (\Throwable $e) {
+                return \json_encode([
                     'error' => $e->getMessage(),
                 ]);
             }

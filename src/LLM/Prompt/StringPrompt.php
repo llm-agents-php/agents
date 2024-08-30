@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace LLM\Agents\LLM\Prompt;
 
-use function array_merge;
-use function trim;
-
 class StringPrompt implements StringPromptInterface, SerializableInterface
 {
     private ?string $cachedPrompt = null;
@@ -16,7 +13,7 @@ class StringPrompt implements StringPromptInterface, SerializableInterface
         protected array $variables = [],
         protected FormatterInterface $formatter = new FString(),
     ) {
-        $this->template = trim($this->template);
+        $this->template = \trim($this->template);
     }
 
     public static function fromArray(array $data, FormatterInterface $formatter = new FString()): static
@@ -27,7 +24,7 @@ class StringPrompt implements StringPromptInterface, SerializableInterface
     public function withValues(array $values): self
     {
         $prompt = clone $this;
-        $prompt->variables = array_merge($this->variables, $values);
+        $prompt->variables = \array_merge($this->variables, $values);
         $prompt->cachedPrompt = null;
 
         return $prompt;
@@ -40,7 +37,7 @@ class StringPrompt implements StringPromptInterface, SerializableInterface
         }
 
         // merge parameters
-        $variables = array_merge($this->variables, $variables);
+        $variables = \array_merge($this->variables, $variables);
 
         $result = $this->formatter->format($this->template, $variables);
         if ($variables === []) {
@@ -48,11 +45,6 @@ class StringPrompt implements StringPromptInterface, SerializableInterface
         }
 
         return $result;
-    }
-
-    public function __toString(): string
-    {
-        return $this->format();
     }
 
     public function toArray(): array
@@ -66,5 +58,10 @@ class StringPrompt implements StringPromptInterface, SerializableInterface
         }
 
         return $result;
+    }
+
+    public function __toString(): string
+    {
+        return $this->format();
     }
 }

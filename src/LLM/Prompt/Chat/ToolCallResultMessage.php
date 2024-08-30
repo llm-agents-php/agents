@@ -13,8 +13,7 @@ final readonly class ToolCallResultMessage implements MessageInterface, HasRoleI
         public string $id,
         public array $content,
         public Role $role = Role::Tool,
-    ) {
-    }
+    ) {}
 
     public static function fromArray(array $data): self
     {

@@ -10,9 +10,6 @@ use LLM\Agents\LLM\Prompt\FString;
 use LLM\Agents\LLM\Prompt\SerializableInterface;
 use LLM\Agents\LLM\Prompt\StringPrompt;
 use LLM\Agents\LLM\Prompt\StringPromptInterface;
-use Stringable;
-
-use function is_string;
 
 final readonly class MessagePrompt implements StringPromptInterface, HasRoleInterface, SerializableInterface
 {
@@ -20,15 +17,14 @@ final readonly class MessagePrompt implements StringPromptInterface, HasRoleInte
         private StringPromptInterface $prompt,
         public Role $role = Role::User,
         private array $with = [],
-    ) {
-    }
+    ) {}
 
     public static function system(
-        StringPromptInterface|string|Stringable $prompt,
+        StringPromptInterface|string|\Stringable $prompt,
         array $values = [],
         array $with = [],
     ): self {
-        if (is_string($prompt)) {
+        if (\is_string($prompt)) {
             $prompt = new StringPrompt($prompt);
         }
 
@@ -36,11 +32,11 @@ final readonly class MessagePrompt implements StringPromptInterface, HasRoleInte
     }
 
     public static function user(
-        StringPromptInterface|string|Stringable $prompt,
+        StringPromptInterface|string|\Stringable $prompt,
         array $values = [],
         array $with = [],
     ): self {
-        if (is_string($prompt)) {
+        if (\is_string($prompt)) {
             $prompt = new StringPrompt($prompt);
         }
 
@@ -48,11 +44,11 @@ final readonly class MessagePrompt implements StringPromptInterface, HasRoleInte
     }
 
     public static function assistant(
-        StringPromptInterface|string|Stringable $prompt,
+        StringPromptInterface|string|\Stringable $prompt,
         array $values = [],
         array $with = [],
     ): self {
-        if (is_string($prompt)) {
+        if (\is_string($prompt)) {
             $prompt = new StringPrompt($prompt);
         }
 
@@ -103,11 +99,6 @@ final readonly class MessagePrompt implements StringPromptInterface, HasRoleInte
         return $this->prompt->format($variables);
     }
 
-    public function __toString(): string
-    {
-        return $this->format();
-    }
-
     public function toArray(): array
     {
         return [
@@ -119,5 +110,10 @@ final readonly class MessagePrompt implements StringPromptInterface, HasRoleInte
     public function getRole(): Role
     {
         return $this->role;
+    }
+
+    public function __toString(): string
+    {
+        return $this->format();
     }
 }

@@ -7,8 +7,6 @@ namespace LLM\Agents\Agent;
 use LLM\Agents\Agent\Exception\AgentAlreadyRegisteredException;
 use LLM\Agents\Agent\Exception\AgentNotFoundException;
 
-use function sprintf;
-
 final class AgentRegistry implements AgentRegistryInterface, AgentRepositoryInterface
 {
     /**
@@ -21,7 +19,7 @@ final class AgentRegistry implements AgentRegistryInterface, AgentRepositoryInte
         $key = $agent->getKey();
 
         if ($this->has($key)) {
-            throw new AgentAlreadyRegisteredException(sprintf('Agent with key [%s] is already registered.', $key));
+            throw new AgentAlreadyRegisteredException(\sprintf('Agent with key [%s] is already registered.', $key));
         }
 
         $this->agents[$key] = $agent;
@@ -30,7 +28,7 @@ final class AgentRegistry implements AgentRegistryInterface, AgentRepositoryInte
     public function get(string $key): AgentInterface
     {
         if (! $this->has($key)) {
-            throw new AgentNotFoundException(sprintf('Agent with key \'%s\' is not registered.', $key));
+            throw new AgentNotFoundException(\sprintf('Agent with key \'%s\' is not registered.', $key));
         }
 
         return $this->agents[$key];

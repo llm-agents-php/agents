@@ -15,8 +15,7 @@ abstract class Solution
         public readonly string $name,
         public readonly SolutionType $type,
         public readonly ?string $description = null,
-    ) {
-    }
+    ) {}
 
     public function addMetadata(SolutionMetadata $metadata): void
     {

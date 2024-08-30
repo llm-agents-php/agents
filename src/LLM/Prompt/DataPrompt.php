@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace LLM\Agents\LLM\Prompt;
 
-use function array_merge;
-use function json_encode;
-
 class DataPrompt implements StringPromptInterface, SerializableInterface
 {
     public function __construct(
         protected array $variables = [],
-    ) {
-    }
+    ) {}
 
     public static function fromArray(array $data): static
     {
@@ -25,19 +21,14 @@ class DataPrompt implements StringPromptInterface, SerializableInterface
     public function withValues(array $values): self
     {
         $prompt = clone $this;
-        $prompt->variables = array_merge($this->variables, $values);
+        $prompt->variables = \array_merge($this->variables, $values);
 
         return $prompt;
     }
 
     public function format(array $variables = []): string
     {
-        return json_encode(array_merge($this->variables, $variables));
-    }
-
-    public function __toString(): string
-    {
-        return $this->format();
+        return \json_encode(\array_merge($this->variables, $variables));
     }
 
     /**
@@ -46,5 +37,10 @@ class DataPrompt implements StringPromptInterface, SerializableInterface
     public function toArray(): array
     {
         return $this->variables;
+    }
+
+    public function __toString(): string
+    {
+        return $this->format();
     }
 }

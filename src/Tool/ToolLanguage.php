@@ -8,6 +8,9 @@ use LLM\Agents\Tool\Exception\LanguageIsNotSupportedException;
 
 enum ToolLanguage: string
 {
+    case PHP = 'php';
+    case Lua = 'lua';
+
     public static function createFromString(string $language): ToolLanguage
     {
         return match ($language) {
@@ -19,8 +22,4 @@ enum ToolLanguage: string
             default => throw new LanguageIsNotSupportedException($language),
         };
     }
-
-    case PHP = 'php';
-
-    case Lua = 'lua';
 }

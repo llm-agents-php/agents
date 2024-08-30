@@ -12,8 +12,7 @@ final class ToolCall implements SerializableInterface
         public string $id,
         public string $name,
         public string $arguments,
-    ) {
-    }
+    ) {}
 
     public static function fromArray(array $data): self
     {
