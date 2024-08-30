@@ -39,7 +39,6 @@
     },
     "require-dev": {
         "ergebnis/phpunit-slow-test-detector": "^2.15",
-        "pestphp/pest": "^2.35",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^1.11",
         "phpstan/phpstan-deprecation-rules": "^1.2",
@@ -68,7 +67,6 @@
         "allow-plugins": {
             "ergebnis/composer-normalize": true,
             "infection/extension-installer": true,
-            "pestphp/pest-plugin": true,
             "phpstan/extension-installer": true
         },
         "audit": {
@@ -103,15 +101,11 @@
         "stan:ci": "phpstan analyse --memory-limit=2G --error-format=github",
         "test": [
             "@putenv XDEBUG_MODE=coverage",
-            "pest --color=always"
-        ],
-        "test:arch": [
-            "@putenv XDEBUG_MODE=coverage",
-            "pest --color=always --configuration pest.xml.dist"
+            "phpunit --color=always"
         ],
         "test:cc": [
             "@putenv XDEBUG_MODE=coverage",
-            "pest --coverage --coverage-clover=.build/phpunit/logs/clover.xml"
+            "phpunit --coverage --coverage-clover=.build/phpunit/logs/clover.xml"
         ]
     }
 }

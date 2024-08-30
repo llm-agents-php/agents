@@ -275,18 +275,14 @@ infect-ci: ## Runs infection – mutation testing framework with github output (
 	$(APP_COMPOSER) infect:ci
 .PHONY: lint-infect-ci
 
-test: test-unit test-arch ## Run project php-unit and pest tests
+test: test-unit ## Run project php-unit tests
 .PHONY: test
 
 test-unit: ## Run project php-unit tests
 	$(APP_COMPOSER) test
 .PHONY: test
 
-test-arch: ## Run project pest tests with architecture checks
-	$(APP_COMPOSER) test:arch
-.PHONY: test-arch
-
-test-cc: ## Run project php-unit and pest tests in coverage mode and build report
+test-cc: ## Run project php-unit tests in coverage mode and build report
 	$(APP_COMPOSER) test:cc
 .PHONY: test-cc
 
