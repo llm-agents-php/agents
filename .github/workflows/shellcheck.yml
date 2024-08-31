@@ -1,0 +1,22 @@
+---
+
+on:  # yamllint disable-line rule:truthy
+  pull_request:
+    branches:
+      - master
+
+name: 🐞 Differential shell-check
+
+permissions:
+  contents: read
+
+jobs:
+  shellcheck:
+    uses: wayofdev/gh-actions/.github/workflows/shellcheck.yml@v3.1.1
+    with:
+      os: ubuntu-latest
+      severity: warning
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+
+...
