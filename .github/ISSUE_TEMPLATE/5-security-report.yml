@@ -1,0 +1,35 @@
+---
+
+name: ⚠️ Security Report
+description: Please report security issues directly through GitHub Security Advisories to ensure privacy.
+title: '[Security]: '
+labels: ['type: bug', 'priority: high', 'type: security']
+
+assignees:
+  - lotyp
+
+body:
+  - type: markdown
+    attributes:
+      value: >
+        ⚠️ **Please DO NOT report security vulnerabilities here.** Instead, use the GitHub Security Advisories feature to report them privately and securely. This helps us address issues responsibly without exposing them publicly.
+
+  - type: markdown
+    attributes:
+      value: >
+        GitHub Advisories do not automatically notify maintainers, so by using the advisories, you help maintain confidentiality while ensuring the issue is documented and tracked properly.
+
+  - type: markdown
+    attributes:
+      value: 'To create a new advisory, go to: [Create Security Advisory](https://github.com/llm-agents-php/agents/security/advisories/new)'
+
+  - type: textarea
+    id: github-advisory-url
+    attributes:
+      label: Your GitHub Advisory URL
+      description: Optionally, you can paste the URL of the GitHub Security Advisory you have created here for reference.
+      placeholder: Paste the GitHub Security Advisory URL here...
+    validations:
+      required: false
+
+...
