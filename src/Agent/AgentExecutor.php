@@ -42,7 +42,7 @@ final readonly class AgentExecutor
 
         $context ??= $this->contextFactory->create();
 
-        if (!$prompt instanceof Prompt) {
+        if (! $prompt instanceof Prompt) {
             $prompt = $this->promptGenerator->generate($agent, $prompt, $sessionContext);
         }
 

@@ -1,0 +1,42 @@
+---
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-added-large-files
+        args: ['--maxkb=600']
+
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.27.0
+    hooks:
+      - id: commitizen
+        stages:
+          - commit-msg
+
+  - repo: local
+    hooks:
+      - id: php-cs-fixer
+        name: PHP CS Fixer
+        description: Lint files using PHP CS Fixer
+        entry: vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --verbose --diff
+        language: system
+        types: [php]
+        exclude: ^vendor/
+        files: \.php$
+        pass_filenames: false
+        require_serial: true
+
+  - repo: local
+    hooks:
+      - id: markdownlint
+        name: markdownlint-cli2
+        description: Run markdownlint-cli2 on your Markdown files using the docker image
+        language: docker_image
+        types: [markdown]
+        entry: 'davidanson/markdownlint-cli2-rules:latest'
+        args: ['--config', '.github/.markdownlint.json']
+
+...

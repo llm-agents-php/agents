@@ -9,7 +9,9 @@ use LLM\Agents\Tool\Exception\UnsupportedToolExecutionException;
 
 final class ToolExecutor
 {
-    /** @var array<ExecutorInterface> */
+    /**
+     * @var array<ExecutorInterface>
+     */
     private array $executors = [];
 
     public function __construct(
@@ -38,7 +40,7 @@ final class ToolExecutor
             }
         }
 
-        if (!$this->has($tool->getLanguage())) {
+        if (! $this->has($tool->getLanguage())) {
             throw new ExecutorNotFoundException($tool->getLanguage());
         }
 

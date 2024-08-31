@@ -10,6 +10,11 @@ class DataPrompt implements StringPromptInterface, SerializableInterface
         protected array $variables = [],
     ) {}
 
+    public static function fromArray(array $data): static
+    {
+        return new static($data);
+    }
+
     /**
      * Creates new prompt with altered values.
      */
@@ -26,11 +31,6 @@ class DataPrompt implements StringPromptInterface, SerializableInterface
         return \json_encode(\array_merge($this->variables, $variables));
     }
 
-    public function __toString(): string
-    {
-        return $this->format();
-    }
-
     /**
      * Serializes prompt to array.
      */
@@ -39,8 +39,8 @@ class DataPrompt implements StringPromptInterface, SerializableInterface
         return $this->variables;
     }
 
-    public static function fromArray(array $data): static
+    public function __toString(): string
     {
-        return new static($data);
+        return $this->format();
     }
 }

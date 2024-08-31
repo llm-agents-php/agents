@@ -13,6 +13,12 @@ use LLM\Agents\LLM\Prompt\StringPromptInterface;
 
 final readonly class MessagePrompt implements StringPromptInterface, HasRoleInterface, SerializableInterface
 {
+    public function __construct(
+        private StringPromptInterface $prompt,
+        public Role $role = Role::User,
+        private array $with = [],
+    ) {}
+
     public static function system(
         StringPromptInterface|string|\Stringable $prompt,
         array $values = [],
@@ -66,18 +72,12 @@ final readonly class MessagePrompt implements StringPromptInterface, HasRoleInte
         );
     }
 
-    public function __construct(
-        private StringPromptInterface $prompt,
-        public Role $role = Role::User,
-        private array $with = [],
-    ) {}
-
     public function toChatMessage(array $parameters = []): ?ChatMessage
     {
         $prompt = $this->prompt;
 
         foreach ($this->with as $var) {
-            if (!isset($parameters[$var]) || empty($parameters[$var])) {
+            if (! isset($parameters[$var]) || empty($parameters[$var])) {
                 // condition failed
                 return null;
             }
@@ -99,11 +99,6 @@ final readonly class MessagePrompt implements StringPromptInterface, HasRoleInte
         return $this->prompt->format($variables);
     }
 
-    public function __toString(): string
-    {
-        return $this->format();
-    }
-
     public function toArray(): array
     {
         return [
@@ -115,5 +110,10 @@ final readonly class MessagePrompt implements StringPromptInterface, HasRoleInte
     public function getRole(): Role
     {
         return $this->role;
+    }
+
+    public function __toString(): string
+    {
+        return $this->format();
     }
 }

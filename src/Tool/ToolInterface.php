@@ -13,7 +13,9 @@ interface ToolInterface
 
     public function getDescription(): string;
 
-    /** @return class-string<T>|string */
+    /**
+     * @return class-string<T>|string
+     */
     public function getInputSchema(): string;
 
     public function getLanguage(): ToolLanguage;

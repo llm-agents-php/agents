@@ -6,7 +6,9 @@ namespace LLM\Agents\Solution;
 
 abstract class Solution
 {
-    /** @var array<SolutionMetadata> */
+    /**
+     * @var array<SolutionMetadata>
+     */
     private array $metadata = [];
 
     public function __construct(

@@ -15,15 +15,6 @@ final readonly class ToolCallResultMessage implements MessageInterface, HasRoleI
         public Role $role = Role::Tool,
     ) {}
 
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->id,
-            'content' => $this->content,
-            'role' => $this->role->value,
-        ];
-    }
-
     public static function fromArray(array $data): self
     {
         return new self(
@@ -31,6 +22,15 @@ final readonly class ToolCallResultMessage implements MessageInterface, HasRoleI
             content: $data['content'],
             role: Role::tryFrom($data['role']),
         );
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'content' => $this->content,
+            'role' => $this->role->value,
+        ];
     }
 
     public function getRole(): Role

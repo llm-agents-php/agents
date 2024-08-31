@@ -10,20 +10,12 @@ use LLM\Agents\LLM\Response\ToolCall;
 
 final class ToolCalledPrompt implements MessageInterface, SerializableInterface
 {
-    /** @param ToolCall[] $tools */
+    /**
+     * @param ToolCall[] $tools
+     */
     public function __construct(
         public array $tools = [],
     ) {}
-
-    public function toArray(): array
-    {
-        return [
-            'tools' => \array_map(
-                static fn(ToolCall $tool): array => $tool->toArray(),
-                $this->tools,
-            ),
-        ];
-    }
 
     public static function fromArray(array $data): self
     {
@@ -33,5 +25,15 @@ final class ToolCalledPrompt implements MessageInterface, SerializableInterface
                 $data['tools'],
             ),
         );
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'tools' => \array_map(
+                static fn(ToolCall $tool): array => $tool->toArray(),
+                $this->tools,
+            ),
+        ];
     }
 }

@@ -14,6 +14,8 @@ interface PromptInterface extends ChatPromptInterface, \Stringable
      */
     public function format(array $variables = []): array;
 
-    /** @return MessageInterface[] */
+    /**
+     * @return MessageInterface[]
+     */
     public function getMessages(): array;
 }

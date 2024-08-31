@@ -19,7 +19,9 @@ use LLM\Agents\Solution\ToolLink;
  */
 class AgentAggregate implements AgentInterface
 {
-    /** @var array<TAssociation> */
+    /**
+     * @var array<TAssociation>
+     */
     private array $associations = [];
 
     public function __construct(

@@ -1,0 +1,20 @@
+{
+    "ignoreMsiWithNoMutations": true,
+    "logs": {
+        "text": ".build/infection/infection-log.txt",
+        "stryker": {
+            "report": "master"
+        }
+    },
+    "minCoveredMsi": 55,
+    "minMsi": 55,
+    "phpUnit": {
+        "configDir": "./"
+    },
+    "source": {
+        "directories": [
+            "src"
+        ]
+    },
+    "timeout": 10
+}

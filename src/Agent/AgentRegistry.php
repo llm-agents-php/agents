@@ -9,7 +9,9 @@ use LLM\Agents\Agent\Exception\AgentNotFoundException;
 
 final class AgentRegistry implements AgentRegistryInterface, AgentRepositoryInterface
 {
-    /** @var array<string, AgentInterface> */
+    /**
+     * @var array<string, AgentInterface>
+     */
     private array $agents = [];
 
     public function register(AgentInterface $agent): void
@@ -25,7 +27,7 @@ final class AgentRegistry implements AgentRegistryInterface, AgentRepositoryInte
 
     public function get(string $key): AgentInterface
     {
-        if (!$this->has($key)) {
+        if (! $this->has($key)) {
             throw new AgentNotFoundException(\sprintf('Agent with key \'%s\' is not registered.', $key));
         }
 

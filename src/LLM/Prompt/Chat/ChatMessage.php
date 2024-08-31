@@ -14,20 +14,20 @@ readonly class ChatMessage implements MessageInterface, HasRoleInterface, Serial
         public Role $role = Role::User,
     ) {}
 
-    public function toArray(): array
-    {
-        return [
-            'content' => $this->content,
-            'role' => $this->role->value,
-        ];
-    }
-
     public static function fromArray(array $data): static
     {
         return new ChatMessage(
             content: $data['content'],
             role: Role::tryFrom($data['role']),
         );
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'content' => $this->content,
+            'role' => $this->role->value,
+        ];
     }
 
     public function getRole(): Role

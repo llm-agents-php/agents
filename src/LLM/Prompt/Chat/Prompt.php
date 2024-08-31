@@ -18,16 +18,33 @@ final class Prompt implements PromptInterface
         protected array $variables = [],
     ) {
         foreach ($this->messages as $message) {
-            if (!$message instanceof MessageInterface) {
+            if (! $message instanceof MessageInterface) {
                 throw new PromptException(\sprintf('Messages must be of type %s.', MessageInterface::class));
             }
         }
+    }
+
+    public static function fromArray(
+        array $data,
+        FormatterInterface $formatter = new FString(),
+    ): self {
+        if ($data === []) {
+            return new self();
+        }
+
+        $messages = \array_map(
+            static fn(array $message) => $message['class']::fromArray($message['data'], $formatter),
+            $data['messages'],
+        );
+
+        return new self($messages, $data['variables'] ?? []);
     }
 
     public function withValues(array $values): self
     {
         $prompt = clone $this;
         $prompt->variables = \array_merge($this->variables, $values);
+
         return $prompt;
     }
 
@@ -35,6 +52,7 @@ final class Prompt implements PromptInterface
     {
         $prompt = clone $this;
         $prompt->messages[] = $message;
+
         return $prompt;
     }
 
@@ -64,11 +82,6 @@ final class Prompt implements PromptInterface
         return $result;
     }
 
-    public function __toString(): string
-    {
-        return \json_encode($this->format());
-    }
-
     public function count(): int
     {
         return \count($this->messages);
@@ -86,26 +99,15 @@ final class Prompt implements PromptInterface
             ),
         ];
 
-        if (!empty($this->variables)) {
+        if (! empty($this->variables)) {
             $result['variables'] = $this->variables;
         }
 
         return $result;
     }
 
-    public static function fromArray(
-        array $data,
-        FormatterInterface $formatter = new FString(),
-    ): self {
-        if ($data === []) {
-            return new self();
-        }
-
-        $messages = \array_map(
-            static fn(array $message) => $message['class']::fromArray($message['data'], $formatter),
-            $data['messages'],
-        );
-
-        return new self($messages, $data['variables'] ?? []);
+    public function __toString(): string
+    {
+        return \json_encode($this->format());
     }
 }

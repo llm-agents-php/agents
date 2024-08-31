@@ -10,6 +10,6 @@ final class ExecutorNotFoundException extends ToolException
 {
     public function __construct(ToolLanguage $language)
     {
-        parent::__construct(sprintf('Executor not found for language: %s', $language->value));
+        parent::__construct(\sprintf('Executor not found for language: %s', $language->value));
     }
 }

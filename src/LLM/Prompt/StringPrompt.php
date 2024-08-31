@@ -16,6 +16,11 @@ class StringPrompt implements StringPromptInterface, SerializableInterface
         $this->template = \trim($this->template);
     }
 
+    public static function fromArray(array $data, FormatterInterface $formatter = new FString()): static
+    {
+        return new static($data['template'], $data['variables'] ?? [], $formatter);
+    }
+
     public function withValues(array $values): self
     {
         $prompt = clone $this;
@@ -42,11 +47,6 @@ class StringPrompt implements StringPromptInterface, SerializableInterface
         return $result;
     }
 
-    public function __toString(): string
-    {
-        return $this->format();
-    }
-
     public function toArray(): array
     {
         $result = [
@@ -60,8 +60,8 @@ class StringPrompt implements StringPromptInterface, SerializableInterface
         return $result;
     }
 
-    public static function fromArray(array $data, FormatterInterface $formatter = new FString()): static
+    public function __toString(): string
     {
-        return new static($data['template'], $data['variables'] ?? [], $formatter);
+        return $this->format();
     }
 }

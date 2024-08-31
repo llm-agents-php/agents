@@ -13,6 +13,5 @@ interface AgentRepositoryInterface
      */
     public function get(string $key): AgentInterface;
 
-
     public function has(string $key): bool;
 }
