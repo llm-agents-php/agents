@@ -12,7 +12,7 @@ interact with various tools and APIs.
 [![Total Downloads](https://img.shields.io/packagist/dt/llm-agents/agents.svg?style=flat-square)](https://packagist.org/packages/llm-agents/agents)
 
 > For a complete example with sample agents and a CLI interface to interact with them, check out our sample application
-> repository https://github.com/llm-agents-php/sample-app. This sample app demonstrates practical implementations and
+> repository <https://github.com/llm-agents-php/sample-app>. This sample app demonstrates practical implementations and
 > usage patterns of the LLM Agents library.
 
 The package does not include any specific LLM implementation. Instead, it provides a framework for creating agents that
