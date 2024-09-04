@@ -12,6 +12,6 @@ interface AgentPromptGeneratorInterface
     public function generate(
         AgentInterface $agent,
         string|\Stringable $prompt,
-        ?array $sessionContext = null,
+        array|null|PromptContextInterface $context = null,
     ): PromptInterface;
 }
