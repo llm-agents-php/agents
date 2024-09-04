@@ -21,6 +21,9 @@ use LLM\Agents\Tool\SchemaMapperInterface;
 use LLM\Agents\Tool\ToolInterface;
 use LLM\Agents\Tool\ToolRepositoryInterface;
 
+/**
+ * @deprecated
+ */
 final readonly class AgentExecutor
 {
     public function __construct(
