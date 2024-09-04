@@ -29,20 +29,16 @@ interact with various tools and APIs.
 The package does not include any specific LLM implementation. Instead, it provides a framework for creating agents that
 can interact with any LLM service or API.
 
-## Features
+## ✨ Key Features
 
-- **Flexible Agent Creation**: Easily create and configure LLM-based agents with customizable behaviors and
-  capabilities.
-- **Tool Integration**: Seamlessly integrate various tools and APIs for agent use, enhancing their problem-solving
-  abilities.
-- **Memory Management**: Built-in support for agent memory, allowing agents to retain and recall information from
-  previous interactions.
-- **Prompt Management**: Efficient handling of prompts and instructions for guiding agent behavior.
-- **Extensible Architecture**: Designed with extensibility in mind, allowing easy addition of new agent types, tools,
-  and capabilities.
-- **Multi-Agent Support**: Create systems with multiple interacting agents for complex problem-solving scenarios.
+- **🤖 Agent Creation:** Create and configure **LLM-based agents** in PHP with customizable behaviors.
+- **🔧 Tool Integration:** Seamlessly integrate various tools and APIs for agent use in PHP applications.
+- **🧠 Memory Management:** Support for agent memory, enabling information retention and recall across interactions.
+- **💡 Prompt Management:** Efficient handling of prompts and instructions to guide agent behavior.
+- **🔌 Extensible Architecture:** Easily add new agent types, tools, and capabilities to your PHP projects.
+- **🤝 Multi-Agent Support:** Build systems with multiple interacting agents for complex problem-solving scenarios in PHP.
 
-## Installation
+## 📀 Installation
 
 You can install the LLM Agents package via Composer:
 
@@ -50,9 +46,9 @@ You can install the LLM Agents package via Composer:
 composer require llm-agents/agents
 ```
 
-## Usage
+## 💻 Usage
 
-### Creating an Agent
+### → Creating an Agent
 
 To create an agent, you'll need to define its behavior, tools, and configuration. Here's a basic example:
 
@@ -102,7 +98,7 @@ class SiteStatusCheckerAgent extends AgentAggregate
 }
 ```
 
-### Implementing a Tool
+### → Implementing a Tool
 
 Now, let's implement the tool used by this agent:
 
@@ -174,7 +170,7 @@ class CheckSiteAvailabilityInput
 }
 ```
 
-### Linking Agents
+### → Linking Agents
 
 LLM Agents supports creating complex systems by linking multiple agents together. This allows you to build hierarchical
 or collaborative agent networks. Here's how you can link one agent to another:
@@ -316,7 +312,7 @@ final class AskAgentInput
 And just add the tool to the agent that has linked agents. When the agent is executed, it will call the linked agent
 if it decides to do so.
 
-### Executing an Agent
+### → Executing an Agent
 
 To execute an agent, you'll use the `AgentExecutor` class:
 
@@ -395,7 +391,7 @@ echo $result;
 
 This example demonstrates how to create a simple agent that can perform a specific task using a custom tool.
 
-### Agent Memory and Prompts
+### → Agent Memory and Prompts
 
 Agents can use memory and predefined prompts to guide their behavior:
 
@@ -431,7 +427,7 @@ $aggregate->addMetadata(
 
 To use the LLM Agents package, you'll need to implement the required interfaces in your project.
 
-### LLMInterface
+### → LLMInterface
 
 It serves as a bridge between your application and LLM you're using, such as OpenAI, Claude, etc.
 
@@ -574,7 +570,7 @@ final readonly class MessageMapper
 }
 ```
 
-### AgentPromptGeneratorInterface
+### → AgentPromptGeneratorInterface
 
 It plays a vital role in preparing the context and instructions for an agent before it processes a user's request. It
 ensures that the agent has all necessary information, including its own instructions, memory, associated agents, and any
@@ -697,7 +693,7 @@ PROMPT,
 }
 ```
 
-### SchemaMapperInterface
+### → SchemaMapperInterface
 
 This class is responsible for handling conversions between JSON schemas and PHP objects.
 
@@ -739,7 +735,7 @@ final readonly class SchemaMapper implements SchemaMapperInterface
 }
 ```
 
-### ContextFactoryInterface
+### → ContextFactoryInterface
 
 It provides a clean way to pass execution-specific data through the system without tightly coupling components or overly
 complicating method signatures.
@@ -759,7 +755,7 @@ final class ContextFactory implements ContextFactoryInterface
 }
 ```
 
-### OptionsFactoryInterface
+### → OptionsFactoryInterface
 
 The options is a simple key-value store that allows you to store and retrieve configuration options that can be passed
 to LLM clients and other components. For example, you can pass a model name, max tokens, and other configuration options
@@ -802,7 +798,7 @@ final class OptionsFactory implements OptionsFactoryInterface
 }
 ```
 
-## Architecture
+## 🏗️ Architecture
 
 The LLM Agents package is built around several key components:
 
@@ -815,10 +811,21 @@ The LLM Agents package is built around several key components:
 
 For a visual representation of the architecture, refer to the class diagram in the documentation.
 
-### Contributing
+## 🙌 Want to Contribute?
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Thank you for considering contributing to the llm-agents-php community! We are open to all kinds of contributions. If you want to:
 
-### License
+- 🤔 [Suggest a feature](https://github.com/llm-agents-php/agents/issues/new?assignees=&labels=type%3A+enhancement&projects=&template=2-feature-request.yml&title=%5BFeature%5D%3A+)
+- 🐛 [Report an issue](https://github.com/llm-agents-php/agents/issues/new?assignees=&labels=type%3A+documentation%2Ctype%3A+maintenance&projects=&template=1-bug-report.yml&title=%5BBug%5D%3A+)
+- 📖 [Improve documentation](https://github.com/llm-agents-php/agents/issues/new?assignees=&labels=type%3A+documentation%2Ctype%3A+maintenance&projects=&template=4-docs-bug-report.yml&title=%5BDocs%5D%3A+)
+- 👨‍💻 Contribute to the code
+
+You are more than welcome. Before contributing, kindly check our [contribution guidelines](.github/CONTRIBUTING.md).
+
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg?style=for-the-badge)](https://conventionalcommits.org)
+
+## ⚖️ License
 
 LLM Agents is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+[![Licence](https://img.shields.io/github/license/llm-agents-php/agents?style=for-the-badge&color=blue)](./LICENSE.md)
