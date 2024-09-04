@@ -7,7 +7,7 @@ namespace LLM\Agents\AgentExecutor\Interceptor;
 use LLM\Agents\Agent\Execution;
 use LLM\Agents\AgentExecutor\ExecutionInput;
 use LLM\Agents\AgentExecutor\ExecutorInterceptorInterface;
-use LLM\Agents\AgentExecutor\ExecutorInterface;
+use LLM\Agents\AgentExecutor\InterceptorHandler;
 use LLM\Agents\LLM\Response\ChatResponse;
 use LLM\Agents\LLM\Response\ToolCalledResponse;
 
@@ -15,15 +15,9 @@ final class InjectResponseIntoPromptInterceptor implements ExecutorInterceptorIn
 {
     public function execute(
         ExecutionInput $input,
-        ExecutorInterface $next,
+        InterceptorHandler $next,
     ): Execution {
-        $execution = $next->execute(
-            agent: $input->agent,
-            prompt: $input->prompt,
-            context: $input->context,
-            options: $input->options,
-            promptContext: $input->promptContext,
-        );
+        $execution = $next($input);
 
         $prompt = $execution->prompt;
 

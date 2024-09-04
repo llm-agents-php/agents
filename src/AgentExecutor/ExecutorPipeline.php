@@ -59,7 +59,7 @@ final class ExecutorPipeline implements ExecutorInterface
                 options: $options,
                 promptContext: $promptContext,
             ),
-            next: $this->next(),
+            next: new InterceptorHandler(executor: $this->next()),
         );
     }
 

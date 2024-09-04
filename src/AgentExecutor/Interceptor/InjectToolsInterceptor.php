@@ -8,7 +8,7 @@ use LLM\Agents\Agent\AgentRepositoryInterface;
 use LLM\Agents\Agent\Execution;
 use LLM\Agents\AgentExecutor\ExecutionInput;
 use LLM\Agents\AgentExecutor\ExecutorInterceptorInterface;
-use LLM\Agents\AgentExecutor\ExecutorInterface;
+use LLM\Agents\AgentExecutor\InterceptorHandler;
 use LLM\Agents\LLM\Prompt\Tool;
 use LLM\Agents\Solution\ToolLink;
 use LLM\Agents\Tool\SchemaMapperInterface;
@@ -25,7 +25,7 @@ final readonly class InjectToolsInterceptor implements ExecutorInterceptorInterf
 
     public function execute(
         ExecutionInput $input,
-        ExecutorInterface $next,
+        InterceptorHandler $next,
     ): Execution {
         $agent = $this->agents->get($input->agent);
 
@@ -34,23 +34,21 @@ final readonly class InjectToolsInterceptor implements ExecutorInterceptorInterf
             $agent->getTools(),
         );
 
-        return $next->execute(
-            agent: $input->agent,
-            prompt: $input->prompt,
-            context: $input->context,
-            options: $input->options->with(
-                'tools',
-                \array_map(
-                    fn(ToolInterface $tool): Tool => new Tool(
-                        name: $tool->getName(),
-                        description: $tool->getDescription(),
-                        parameters: $this->schemaMapper->toJsonSchema($tool->getInputSchema()),
-                        strict: false,
+        return $next(
+            $input->withOptions(
+                $input->options->with(
+                    'tools',
+                    \array_map(
+                        fn(ToolInterface $tool): Tool => new Tool(
+                            name: $tool->getName(),
+                            description: $tool->getDescription(),
+                            parameters: $this->schemaMapper->toJsonSchema($tool->getInputSchema()),
+                            strict: false,
+                        ),
+                        $tools,
                     ),
-                    $tools,
                 ),
             ),
-            promptContext: $input->promptContext,
         );
     }
 }

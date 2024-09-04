@@ -19,6 +19,39 @@ final readonly class ExecutionInput
         public PromptContextInterface $promptContext,
     ) {}
 
+    public function withAgent(string $agent): self
+    {
+        return new self(
+            $agent,
+            $this->prompt,
+            $this->context,
+            $this->options,
+            $this->promptContext,
+        );
+    }
+
+    public function withPromptContext(PromptContextInterface $context): self
+    {
+        return new self(
+            $this->agent,
+            $this->prompt,
+            $this->context,
+            $this->options,
+            $context,
+        );
+    }
+
+    public function withContext(ContextInterface $context): self
+    {
+        return new self(
+            $this->agent,
+            $this->prompt,
+            $context,
+            $this->options,
+            $this->promptContext,
+        );
+    }
+
     public function withPrompt(PromptInterface $prompt): self
     {
         return new self(

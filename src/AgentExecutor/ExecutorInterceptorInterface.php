@@ -10,6 +10,6 @@ interface ExecutorInterceptorInterface
 {
     public function execute(
         ExecutionInput $input,
-        ExecutorInterface $next,
+        InterceptorHandler $next,
     ): Execution;
 }

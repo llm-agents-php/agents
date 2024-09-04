@@ -8,7 +8,7 @@ use LLM\Agents\Agent\AgentRepositoryInterface;
 use LLM\Agents\Agent\Execution;
 use LLM\Agents\AgentExecutor\ExecutionInput;
 use LLM\Agents\AgentExecutor\ExecutorInterceptorInterface;
-use LLM\Agents\AgentExecutor\ExecutorInterface;
+use LLM\Agents\AgentExecutor\InterceptorHandler;
 
 final readonly class InjectModelInterceptor implements ExecutorInterceptorInterface
 {
@@ -18,7 +18,7 @@ final readonly class InjectModelInterceptor implements ExecutorInterceptorInterf
 
     public function execute(
         ExecutionInput $input,
-        ExecutorInterface $next,
+        InterceptorHandler $next,
     ): Execution {
         $agent = $this->agents->get($input->agent);
 
@@ -26,12 +26,6 @@ final readonly class InjectModelInterceptor implements ExecutorInterceptorInterf
             $input->options->with('model', $agent->getModel()->name),
         );
 
-        return $next->execute(
-            agent: $input->agent,
-            prompt: $input->prompt,
-            context: $input->context,
-            options: $input->options,
-            promptContext: $input->promptContext,
-        );
+        return $next($input);
     }
 }

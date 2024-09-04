@@ -8,7 +8,7 @@ use LLM\Agents\Agent\AgentRepositoryInterface;
 use LLM\Agents\Agent\Execution;
 use LLM\Agents\AgentExecutor\ExecutionInput;
 use LLM\Agents\AgentExecutor\ExecutorInterceptorInterface;
-use LLM\Agents\AgentExecutor\ExecutorInterface;
+use LLM\Agents\AgentExecutor\InterceptorHandler;
 use LLM\Agents\LLM\AgentPromptGeneratorInterface;
 use LLM\Agents\LLM\Prompt\Chat\Prompt;
 
@@ -21,7 +21,7 @@ final readonly class GeneratePromptInterceptor implements ExecutorInterceptorInt
 
     public function execute(
         ExecutionInput $input,
-        ExecutorInterface $next,
+        InterceptorHandler $next,
     ): Execution {
         if (!$input->prompt instanceof Prompt) {
             $input = $input->withPrompt(
@@ -33,12 +33,6 @@ final readonly class GeneratePromptInterceptor implements ExecutorInterceptorInt
             );
         }
 
-        return $next->execute(
-            agent: $input->agent,
-            prompt: $input->prompt,
-            context: $input->context,
-            options: $input->options,
-            promptContext: $input->promptContext,
-        );
+        return $next($input);
     }
 }
