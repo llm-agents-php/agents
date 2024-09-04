@@ -11,7 +11,9 @@ use LLM\Agents\LLM\LLMInterface;
 use LLM\Agents\LLM\OptionsFactoryInterface;
 use LLM\Agents\LLM\OptionsInterface;
 use LLM\Agents\LLM\Prompt\Chat\Prompt;
+use LLM\Agents\LLM\Prompt\Context;
 use LLM\Agents\LLM\Prompt\Tool;
+use LLM\Agents\LLM\PromptContextInterface;
 use LLM\Agents\LLM\Response\ChatResponse;
 use LLM\Agents\LLM\Response\ToolCalledResponse;
 use LLM\Agents\Solution\ToolLink;
@@ -36,14 +38,14 @@ final readonly class AgentExecutor
         string|\Stringable|Prompt $prompt,
         ?ContextInterface $context = null,
         ?OptionsInterface $options = null,
-        ?array $sessionContext = null,
+        PromptContextInterface $promptContext = new Context(),
     ): Execution {
         $agent = $this->agents->get($agent);
 
         $context ??= $this->contextFactory->create();
 
-        if (! $prompt instanceof Prompt) {
-            $prompt = $this->promptGenerator->generate($agent, $prompt, $sessionContext);
+        if (!$prompt instanceof Prompt) {
+            $prompt = $this->promptGenerator->generate($agent, $prompt, $promptContext);
         }
 
         $model = $agent->getModel();
