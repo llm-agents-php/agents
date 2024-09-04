@@ -52,11 +52,13 @@ final class ExecutorPipeline implements ExecutorInterface
         }
 
         return $this->interceptors[$this->offset]->execute(
-            agent: $agent,
-            prompt: $prompt,
-            context: $context,
-            options: $options,
-            promptContext: $promptContext,
+            input: new ExecutionInput(
+                agent: $agent,
+                prompt: $prompt,
+                context: $context,
+                options: $options,
+                promptContext: $promptContext,
+            ),
             next: $this->next(),
         );
     }
