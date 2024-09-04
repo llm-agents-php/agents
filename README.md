@@ -1,4 +1,15 @@
-# LLM Agents
+<p align="center">
+    <br>
+    <a href="https://github.com/llm-agents-php" target="_blank">
+        <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/llm-agents-php/.github/master/assets/logo.png">
+            <img width="200" src="https://raw.githubusercontent.com/llm-agents-php/.github/master/assets/logo.png" alt="LLM Agents Logo">
+        </picture>
+    </a>
+    <br>
+</p>
+
+# LLM Agents PHP SDK
 
 LLM Agents is a powerful PHP library for building and managing Language Model (LLM) based agents. This package provides
 a flexible and extensible framework for creating autonomous agents that can perform complex tasks, make decisions, and
