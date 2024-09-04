@@ -30,8 +30,11 @@ final readonly class GeneratePromptInterceptor implements ExecutorInterceptorInt
         ExecutorInterface $next,
     ): Execution {
         if (!$prompt instanceof Prompt) {
-            $agent = $this->agents->get($agent);
-            $prompt = $this->promptGenerator->generate($agent, $prompt, $promptContext);
+            $prompt = $this->promptGenerator->generate(
+                $this->agents->get($agent),
+                $prompt,
+                $promptContext,
+            );
         }
 
         return $next->execute(

@@ -8,7 +8,6 @@ use LLM\Agents\Agent\AgentRepositoryInterface;
 use LLM\Agents\Agent\Execution;
 use LLM\Agents\AgentExecutor\ExecutorInterceptorInterface;
 use LLM\Agents\AgentExecutor\ExecutorInterface;
-use LLM\Agents\LLM\AgentPromptGeneratorInterface;
 use LLM\Agents\LLM\ContextInterface;
 use LLM\Agents\LLM\OptionsInterface;
 use LLM\Agents\LLM\Prompt\Chat\Prompt;
