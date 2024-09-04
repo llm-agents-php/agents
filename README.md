@@ -36,7 +36,8 @@ can interact with any LLM service or API.
 - **🧠 Memory Management:** Support for agent memory, enabling information retention and recall across interactions.
 - **💡 Prompt Management:** Efficient handling of prompts and instructions to guide agent behavior.
 - **🔌 Extensible Architecture:** Easily add new agent types, tools, and capabilities to your PHP projects.
-- **🤝 Multi-Agent Support:** Build systems with multiple interacting agents for complex problem-solving scenarios in PHP.
+- **🤝 Multi-Agent Support:** Build systems with multiple interacting agents for complex problem-solving scenarios in
+  PHP.
 
 ## 📀 Installation
 
@@ -317,75 +318,34 @@ if it decides to do so.
 To execute an agent, you'll use the `AgentExecutor` class:
 
 ```php
-use LLM\Agents\Agent\AgentExecutor;
+use LLM\Agents\AgentExecutor\ExecutorInterface;
 use LLM\Agents\LLM\Prompt\Chat\Prompt;
-use LLM\Agents\Tool\ToolExecutor;
-use LLM\Agents\LLM\Prompt\Chat\ToolCallResultMessage;
-use LLM\Agents\LLM\Response\ChatResponse;
-use LLM\Agents\LLM\Response\ToolCall;
+use LLM\Agents\LLM\Prompt\Chat\MessagePrompt;
 
-final readonly class AgentRunner
+class AgentRunner
 {
     public function __construct(
-        private AgentExecutor $executor,
-        private ToolExecutor $toolExecutor,
+        private ExecutorInterface $executor,
     ) {}
 
-    public function run(string $url): string
+    public function run(string $input): string
     {
         $prompt = new Prompt([
-            Prompt\MessagePrompt::user("Check the status of $url"),
+            MessagePrompt::user($input),
         ]);
 
-        $finished = false;
-        while (true) {
-            $execution = $this->executor->execute(
-                agent: SiteStatusCheckerAgent::NAME,
-                prompt: $prompt,
-            );
-        
-            $result = $execution->result;
-            $prompt = $execution->prompt;
-
-            if ($result instanceof ToolCalledResponse) {
-                // First, call all tools.
-                $toolsResponse = [];
-                foreach ($result->tools as $tool) {
-                    $toolsResponse[] = $this->callTool($session, $tool);
-                }
-
-                // Then add the tools responses to the prompt.
-                foreach ($toolsResponse as $toolResponse) {
-                    $prompt = $prompt->withAddedMessage($toolResponse);
-                }
-            } elseif ($result instanceof ChatResponse) {
-                $finished = true;
-            }
-
-            if ($finished) {
-                break;
-            }
-        }
+        $execution = $this->executor->execute(
+            agent: MyAgent::NAME,
+            prompt: $prompt,
+        );
 
         return (string)$execution->result->content;
-    }
-
-    private function callTool(ToolCall $tool): ToolCallResultMessage
-    {
-        $functionResult = $this->toolExecutor->execute($tool->name, $tool->arguments);
-
-        return new ToolCallResultMessage(
-            id: $tool->id,
-            content: [$functionResult],
-        );
     }
 }
 
 // Usage
-$agentRunner = new AgentRunner(/* ... */);
-
-$result = $agentRunner->run('Check the status of https://example.com');
-
+$agentRunner = new AgentRunner($executor);
+$result = $agentRunner->run("Do something cool!");
 echo $result;
 ```
 
@@ -422,6 +382,148 @@ $aggregate->addMetadata(
     //...
 );
 ```
+
+## Executor Interceptors
+
+The package includes a powerful interceptor system for the executor. This allows developers to inject data
+into prompts, modify execution options, and handle LLM responses at various stages of the execution process. Here's a
+detailed look at each available interceptor:
+
+```php
+use LLM\Agents\AgentExecutor\ExecutorInterface;
+use LLM\Agents\AgentExecutor\ExecutorPipeline;
+use LLM\Agents\AgentExecutor\Interceptor\GeneratePromptInterceptor;
+use LLM\Agents\AgentExecutor\Interceptor\InjectModelInterceptor;
+use LLM\Agents\AgentExecutor\Interceptor\InjectOptionsInterceptor;
+use LLM\Agents\AgentExecutor\Interceptor\InjectResponseIntoPromptInterceptor;
+use LLM\Agents\AgentExecutor\Interceptor\InjectToolsInterceptor;
+
+$executor = new ExecutorPipeline(...);
+
+$executor = $executor->withInterceptor(
+    new GeneratePromptInterceptor(...),
+    new InjectModelInterceptor(...),
+    new InjectToolsInterceptor(...),
+    new InjectOptionsInterceptor(...),
+    new InjectResponseIntoPromptInterceptor(...),
+);
+
+$executor->execute(...);
+```
+
+### Available Interceptors
+
+1. **GeneratePromptInterceptor**
+    - **Purpose**: Generates the initial prompt for the agent.
+    - **Functionality**:
+        - Uses the `AgentPromptGeneratorInterface` to create a comprehensive prompt.
+        - Incorporates agent instructions, memory, and user input into the prompt.
+    - **When to use**: Always include this interceptor to ensure proper prompt generation.
+
+2. **InjectModelInterceptor**
+    - **Purpose**: Injects the appropriate language model for the agent.
+    - **Functionality**:
+        - Retrieves the model associated with the agent.
+        - Adds the model information to the execution options.
+    - **When to use**: Include this interceptor when you want to ensure the correct model is used for each agent,
+      especially in multi-agent systems.
+
+3. **InjectToolsInterceptor**
+    - **Purpose**: Adds the agent's tools to the execution options.
+    - **Functionality**:
+        - Retrieves all tools associated with the agent.
+        - Converts tool schemas into a format understood by the LLM.
+        - Adds tool information to the execution options.
+    - **When to use**: Include this interceptor when your agent uses tools and you want them available during execution.
+
+4. **InjectOptionsInterceptor**
+    - **Purpose**: Incorporates additional configuration options for the agent.
+    - **Functionality**:
+        - Retrieves any custom configuration options defined for the agent.
+        - Adds these options to the execution options.
+    - **When to use**: Include this interceptor when you have agent-specific configuration that should be applied during
+      execution.
+
+5. **InjectResponseIntoPromptInterceptor**
+    - **Purpose**: Adds the LLM's response back into the prompt for continuous conversation.
+    - **Functionality**:
+        - Takes the LLM's response from the previous execution.
+        - Appends this response to the existing prompt.
+    - **When to use**: Include this interceptor in conversational agents or when context from previous interactions is
+      important.
+
+### Creating Custom Interceptors
+
+You can create custom interceptors to add specialized behavior to your agent execution pipeline.
+
+Here's an example of a custom interceptor that adds time-aware and user-specific context to the prompt:
+
+```php
+use LLM\Agents\AgentExecutor\ExecutorInterceptorInterface;
+use LLM\Agents\AgentExecutor\ExecutionInput;
+use LLM\Agents\AgentExecutor\InterceptorHandler;
+use LLM\Agents\Agent\Execution;
+use LLM\Agents\LLM\Prompt\Chat\Prompt;
+use LLM\Agents\LLM\Response\ChatResponse;
+use Psr\Log\LoggerInterface;
+
+class TokenCounterInterceptor implements ExecutorInterceptorInterface
+{
+    public function __construct(
+        private TokenCounterInterface $tokenCounter,
+        private LoggerInterface $logger,
+    ) {}
+
+    public function execute(ExecutionInput $input, InterceptorHandler $next): Execution
+    {
+        // Count tokens in the input prompt
+        $promptTokens = $this->tokenCounter->count((string) $input->prompt);
+
+        // Execute the next interceptor in the chain
+        $execution = $next($input);
+
+        // Count tokens in the response
+        $responseTokens = 0;
+        if ($execution->result instanceof ChatResponse) {
+            $responseTokens = $this->tokenCounter->count((string) $execution->result->content);
+        }
+
+        // Log the token counts
+        $this->logger->info('Token usage', [
+            'prompt_tokens' => $promptTokens,
+            'response_tokens' => $responseTokens,
+            'total_tokens' => $promptTokens + $responseTokens,
+        ]);
+
+        return $execution;
+    }
+}
+```
+
+Then, you can add your custom interceptor to the executor:
+
+```php
+use Psr\Log\LoggerInterface;
+
+// Assume you have implementations of TokenCounterInterface and LoggerInterface
+$tokenCounter = new MyTokenCounter();
+$logger = new MyLogger();
+
+$executor = $executor->withInterceptor(
+    new TokenCounterInterceptor($tokenCounter, $logger),
+);
+```
+
+This example demonstrates how to create a more complex and useful interceptor. The token counting interceptor can be
+valuable for monitoring API usage, optimizing prompt length, or ensuring you stay within token limits of your LLM
+provider.
+
+**You can create various other types of interceptors to suit your specific needs, such as:**
+
+- Caching interceptors to store and retrieve responses for identical prompts
+- Rate limiting interceptors to control the frequency of API calls
+- Error handling interceptors to gracefully manage and log exceptions
+- Analytics interceptors to gather data on agent performance and usage patterns
 
 ## Implementing Required Interfaces
 
@@ -570,7 +672,7 @@ final readonly class MessageMapper
 }
 ```
 
-### → AgentPromptGeneratorInterface
+## Prompt Generation
 
 It plays a vital role in preparing the context and instructions for an agent before it processes a user's request. It
 ensures that the agent has all necessary information, including its own instructions, memory, associated agents, and any
@@ -584,111 +686,47 @@ relevant session context.
 
 You can customize the prompt generation logic to suit your specific requirements.
 
-Here's an example implementation of the `LLM\Agents\LLM\AgentPromptGeneratorInterface`:
+Instead of implementing the `AgentPromptGeneratorInterface` yourself, you can use the `llm-agents/prompt-generator`
+package as an implementation. This package provides a flexible and extensible system for generating chat prompts with
+all required system and user messages for LLM agents.
+
+> **Note:** Read full documentation of the `llm-agents/prompt-generator`
+> package [here](https://github.com/llm-agents-php/prompt-generator)
+
+To use it, first install the package:
+
+```bash
+composer require llm-agents/prompt-generator
+```
+
+Then, set it up in your project. Here's an example using Spiral Framework:
 
 ```php
-use LLM\Agents\Agent\AgentInterface;
-use LLM\Agents\Agent\AgentRepositoryInterface;
-use LLM\Agents\LLM\AgentPromptGeneratorInterface;
-use LLM\Agents\LLM\Prompt\Chat\ChatMessage;
-use LLM\Agents\LLM\Prompt\Chat\MessagePrompt;
-use LLM\Agents\LLM\Prompt\Chat\Prompt;
-use LLM\Agents\LLM\Prompt\Chat\PromptInterface;
-use LLM\Agents\LLM\Prompt\Chat\Role;
-use LLM\Agents\Solution\AgentLink;
-use LLM\Agents\Solution\SolutionMetadata;
-use Spiral\JsonSchemaGenerator\Generator;
+use LLM\Agents\PromptGenerator\Interceptors\AgentMemoryInjector;
+use LLM\Agents\PromptGenerator\Interceptors\InstructionGenerator;
+use LLM\Agents\PromptGenerator\Interceptors\LinkedAgentsInjector;
+use LLM\Agents\PromptGenerator\Interceptors\UserPromptInjector;
+use LLM\Agents\PromptGenerator\PromptGeneratorPipeline;
 
-final readonly class AgentPromptGenerator implements AgentPromptGeneratorInterface
+class PromptGeneratorBootloader extends Bootloader
 {
-    public function __construct(
-        private AgentRepositoryInterface $agents,
-        private Generator $schemaGenerator,
-    ) {}
+    public function defineSingletons(): array
+    {
+        return [
+            PromptGeneratorPipeline::class => static function (
+                LinkedAgentsInjector $linkedAgentsInjector,
+            ): PromptGeneratorPipeline {
+                $pipeline = new PromptGeneratorPipeline();
 
-    public function generate(
-        AgentInterface $agent,
-        string|\Stringable $prompt,
-        ?array $sessionContext = null,
-    ): PromptInterface {
-        $messages = [
-            // Top instruction
-            MessagePrompt::system(
-                prompt: \sprintf(
-                    <<<'PROMPT'
-{prompt}
-Important rules:
-- always response in markdown format
-- think before responding to user
-PROMPT,
-                ),
-                values: ['prompt' => $agent->getInstruction()],
-            ),
-
-            // Agent memory
-            MessagePrompt::system(
-                prompt: 'Instructions about your experiences, follow them: {memory}',
-                values: [
-                    'memory' => \implode(
-                        "\n",
-                        \array_map(
-                            static fn(SolutionMetadata $metadata) => $metadata->content,
-                            $agent->getMemory(),
-                        ),
-                    ),
-                ],
-            ),
+                return $pipeline->withInterceptor(
+                    new InstructionGenerator(),
+                    new AgentMemoryInjector(),
+                    $linkedAgentsInjector,
+                    new UserPromptInjector(),
+                    // Add more interceptors as needed
+                );
+            },
         ];
-
-        $associatedAgents = \array_map(
-            fn(AgentLink $agent): array => [
-                'agent' => $this->agents->get($agent->getName()),
-                'output_schema' => \json_encode($this->schemaGenerator->generate($agent->outputSchema)),
-            ],
-            $agent->getAgents(),
-        );
-
-
-        if (\count($associatedAgents) > 0) {
-            $messages[] = MessagePrompt::system(
-                prompt: <<<'PROMPT'
-There are agents {associated_agents} associated with you. You can ask them for help if you need it.
-Use the `ask_agent` tool and provide the agent key.
-Always follow rules:
-- Don't make up the agent key. Use only the ones from the provided list.
-PROMPT,
-                values: [
-                    'associated_agents' => \implode(
-                        PHP_EOL,
-                        \array_map(
-                            static fn(array $agent): string => \json_encode([
-                                'key' => $agent['agent']->getKey(),
-                                'description' => $agent['agent']->getDescription(),
-                                'output_schema' => $agent['output_schema'],
-                            ]),
-                            $associatedAgents,
-                        ),
-                    ),
-                ],
-            );
-        }
-
-        if ($sessionContext !== null) {
-            $messages[] = MessagePrompt::system(
-                prompt: 'Session context: {active_context}',
-                values: ['active_context' => \json_encode($sessionContext)],
-            );
-        }
-
-        // User prompt
-        $messages[] = new ChatMessage(
-            content: $prompt,
-            role: Role::User,
-        );
-
-        return new Prompt(
-            messages: $messages,
-        );
     }
 }
 ```
@@ -811,13 +849,110 @@ The LLM Agents package is built around several key components:
 
 For a visual representation of the architecture, refer to the class diagram in the documentation.
 
+## 🎨 Class Diagram
+
+Here's a class diagram illustrating the key components of the LLM Agents PHP SDK:
+
+```mermaid
+classDiagram
+    class AgentInterface {
+        <<interface>>
+        +getKey() string
+        +getName() string
+        +getDescription() string
+        +getInstruction() string
+        +getTools() array
+        +getAgents() array
+        +getModel() Model
+        +getMemory() array
+        +getPrompts() array
+        +getConfiguration() array
+    }
+
+    class AgentAggregate {
+        -agent: Agent
+        -associations: array
+        +addAssociation(Solution)
+        +addMetadata(SolutionMetadata)
+    }
+
+    class Agent {
+        +key: string
+        +name: string
+        +description: string
+        +instruction: string
+        +isActive: bool
+    }
+
+    class Solution {
+        <<abstract>>
+        +name: string
+        +type: SolutionType
+        +description: string
+        -metadata: array
+        +addMetadata(SolutionMetadata)
+        +getMetadata() array
+    }
+
+    class SolutionMetadata {
+        +type: MetadataType
+        +key: string
+        +content: string|Stringable|int
+    }
+
+    class Model {
+        +model: string
+    }
+
+    class ToolLink {
+        +getName() string
+    }
+
+    class AgentLink {
+        +getName() string
+        +outputSchema: string
+    }
+
+    class ExecutorInterface {
+        <<interface>>
+        +execute(string, string|Stringable|Prompt, ContextInterface, OptionsInterface, PromptContextInterface) Execution
+        +withInterceptor(ExecutorInterceptorInterface) self
+    }
+
+    class ToolInterface {
+        <<interface>>
+        +getName() string
+        +getDescription() string
+        +getInputSchema() string
+        +getLanguage() ToolLanguage
+        +execute(object) string|Stringable
+    }
+
+    AgentAggregate ..|> AgentInterface
+    AgentAggregate o-- Agent
+    AgentAggregate o-- Solution
+    Agent --|> Solution
+    Model --|> Solution
+    ToolLink --|> Solution
+    AgentLink --|> Solution
+    ExecutorInterface --> AgentInterface
+    ExecutorInterface --> ToolInterface
+    Solution o-- SolutionMetadata
+```
+
 ## 🙌 Want to Contribute?
 
-Thank you for considering contributing to the llm-agents-php community! We are open to all kinds of contributions. If you want to:
+Thank you for considering contributing to the llm-agents-php community! We are open to all kinds of contributions. If
+you want to:
 
-- 🤔 [Suggest a feature](https://github.com/llm-agents-php/agents/issues/new?assignees=&labels=type%3A+enhancement&projects=&template=2-feature-request.yml&title=%5BFeature%5D%3A+)
-- 🐛 [Report an issue](https://github.com/llm-agents-php/agents/issues/new?assignees=&labels=type%3A+documentation%2Ctype%3A+maintenance&projects=&template=1-bug-report.yml&title=%5BBug%5D%3A+)
-- 📖 [Improve documentation](https://github.com/llm-agents-php/agents/issues/new?assignees=&labels=type%3A+documentation%2Ctype%3A+maintenance&projects=&template=4-docs-bug-report.yml&title=%5BDocs%5D%3A+)
+-
+
+🤔 [Suggest a feature](https://github.com/llm-agents-php/agents/issues/new?assignees=&labels=type%3A+enhancement&projects=&template=2-feature-request.yml&title=%5BFeature%5D%3A+)
+-
+🐛 [Report an issue](https://github.com/llm-agents-php/agents/issues/new?assignees=&labels=type%3A+documentation%2Ctype%3A+maintenance&projects=&template=1-bug-report.yml&title=%5BBug%5D%3A+)
+-
+📖 [Improve documentation](https://github.com/llm-agents-php/agents/issues/new?assignees=&labels=type%3A+documentation%2Ctype%3A+maintenance&projects=&template=4-docs-bug-report.yml&title=%5BDocs%5D%3A+)
+
 - 👨‍💻 Contribute to the code
 
 You are more than welcome. Before contributing, kindly check our [contribution guidelines](.github/CONTRIBUTING.md).
