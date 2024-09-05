@@ -24,11 +24,23 @@ final class ToolExecutor
         $this->executors[$language->value] = $executor;
     }
 
+    /**
+     * @throws ExecutorNotFoundException
+     * @throws UnsupportedToolExecutionException
+     */
     public function execute(string $tool, string $input): string|\Stringable
     {
         $tool = $this->tools->get($tool);
 
-        $input = $this->schemaMapper->toObject($input, $tool->getInputSchema());
+        // In some cases, the input schema can be a class name or a JSON schema string.
+        // For example, the input schema can be a class name when the tool is a PHP tool.
+        // Or it can be a JSON schema string when the tool is a Python tool stored in the database.
+        // So we need to handle both cases.
+        if (\class_exists($tool->getInputSchema())) {
+            $input = $this->schemaMapper->toObject($input, $tool->getInputSchema());
+        } else {
+            $input = \json_decode($input);
+        }
 
         if ($tool->getLanguage() === ToolLanguage::PHP) {
             try {
@@ -40,7 +52,7 @@ final class ToolExecutor
             }
         }
 
-        if (! $this->has($tool->getLanguage())) {
+        if (!$this->has($tool->getLanguage())) {
             throw new ExecutorNotFoundException($tool->getLanguage());
         }
 

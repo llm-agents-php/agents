@@ -39,16 +39,31 @@ final readonly class InjectToolsInterceptor implements ExecutorInterceptorInterf
                 $input->options->with(
                     'tools',
                     \array_map(
-                        fn(ToolInterface $tool): Tool => new Tool(
-                            name: $tool->getName(),
-                            description: $tool->getDescription(),
-                            parameters: $this->schemaMapper->toJsonSchema($tool->getInputSchema()),
-                            strict: false,
-                        ),
+                        fn(ToolInterface $tool): Tool => $this->buildTool($tool),
                         $tools,
                     ),
                 ),
             ),
+        );
+    }
+
+    private function buildTool(ToolInterface $tool): Tool
+    {
+        // In some cases, the input schema can be a class name or a JSON schema string.
+        // For example, the input schema can be a class name when the tool is a PHP tool.
+        // Or it can be a JSON schema string when the tool is a Python tool stored in the database.
+        // So we need to handle both cases.
+        if (\class_exists($tool->getInputSchema())) {
+            $parameters = $this->schemaMapper->toJsonSchema($tool->getInputSchema());
+        } else {
+            $parameters = \json_decode($tool->getInputSchema(), true);
+        }
+
+        return new Tool(
+            name: $tool->getName(),
+            description: $tool->getDescription(),
+            parameters: $parameters,
+            strict: false,
         );
     }
 }
