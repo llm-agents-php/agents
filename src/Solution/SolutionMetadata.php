@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LLM\Agents\Solution;
 
-final readonly class SolutionMetadata
+readonly class SolutionMetadata
 {
     public function __construct(
         public MetadataType $type,
