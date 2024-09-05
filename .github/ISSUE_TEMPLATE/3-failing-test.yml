@@ -1,0 +1,60 @@
+---
+
+name: 🧪 Failing Test
+description: Report failing tests or CI jobs.
+title: '[Test]: '
+labels: ['type: test']
+
+assignees:
+  - lotyp
+
+body:
+  - type: markdown
+    attributes:
+      value: 🧪 **Failing Test**
+
+  - type: textarea
+    id: failing-tests
+    attributes:
+      label: Which jobs/test(s) are failing
+      description: Please specify which CI jobs or tests are failing. Include test names or job identifiers.
+      placeholder: List the failing jobs or tests here...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reason-for-failure
+    attributes:
+      label: Reason for failure/description
+      description: Explain why the test is failing or what might be missing to make it pass. If available, include error messages or output logs.
+      placeholder: Provide details on why the test is failing, including error logs or output messages...
+    validations:
+      required: true
+
+  - type: textarea
+    id: media-prove
+    attributes:
+      label: Media prove
+      description: If applicable, add screenshots, videos, or links to logs that help explain the issue. Visual aids can be very helpful in diagnosing problems.
+      placeholder: Upload files or paste links here...
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem, such as related issues, recent changes, or environmental specifics that might influence the test outcome.
+      placeholder: Include any other relevant information that might help understand the issue...
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        📛 To ensure a smooth issue processing, please check if a similar bug report has already been submitted before creating a new one.
+        We highly value your contributions, so please make sure to familiarize yourself with our repository's guidelines:
+        - [Code of Conduct](https://github.com/llm-agents-php/agents/blob/master/.github/CODE_OF_CONDUCT.md)
+        - [Contribution Guidelines](https://github.com/llm-agents-php/agents/blob/master/.github/CONTRIBUTING.md)
+
+...

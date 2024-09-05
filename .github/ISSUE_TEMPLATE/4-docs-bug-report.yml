@@ -1,0 +1,76 @@
+---
+
+name: 📚 Documentation or README.md issue report
+description: Report an issue in the project's documentation or README.md file.
+title: '[Docs]: '
+labels: ['type: documentation', 'type: maintenance']
+
+assignees:
+  - lotyp
+
+body:
+  - type: markdown
+    attributes:
+      value: 📚 **Documentation Issue Report**
+
+  - type: textarea
+    id: documentation-bug-description
+    attributes:
+      label: Describe the bug
+      description: Provide a clear and concise description of what the error or issue is in the documentation.
+      placeholder: Explain the issue with the documentation...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: To Reproduce
+      description: |
+        Please provide steps to reproduce the error in the documentation:
+        1. Navigate to the section or URL where the error occurs...
+        2. Specify the misleading or incorrect information...
+        3. Suggest what is expected if applicable...
+      placeholder: |
+        1. URL or Section...
+        2. Misleading information...
+        3. Expected correction...
+    validations:
+      required: true
+
+  - type: textarea
+    id: media-prove
+    attributes:
+      label: Media prove
+      description: If applicable, add screenshots or videos to better illustrate the issue with the documentation.
+      placeholder: Upload files or paste links here...
+    validations:
+      required: false
+
+  - type: textarea
+    id: desired-solution
+    attributes:
+      label: Describe the solution you would like
+      description: Describe what changes or improvements you would like to see in the documentation.
+      placeholder: Describe the desired changes or improvements...
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other context or additional information that could help clarify the documentation issue.
+      placeholder: Provide any additional context here...
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        📛 To ensure a smooth issue processing, please check if a similar bug report has already been submitted before creating a new one.
+        We highly value your contributions, so please make sure to familiarize yourself with our repository's guidelines:
+        - [Code of Conduct](https://github.com/llm-agents-php/agents/blob/master/.github/CODE_OF_CONDUCT.md)
+        - [Contribution Guidelines](https://github.com/llm-agents-php/agents/blob/master/.github/CONTRIBUTING.md)
+
+...

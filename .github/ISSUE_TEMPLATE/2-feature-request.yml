@@ -1,0 +1,72 @@
+---
+
+name: 🚀 Feature Request
+description: Suggest an idea or possible new feature for this project.
+title: '[Feature]: '
+labels: ['type: enhancement']
+
+assignees:
+  - lotyp
+
+body:
+  - type: markdown
+    attributes:
+      value: 🚀 **Feature Request**
+
+  - type: textarea
+    id: problem-related
+    attributes:
+      label: Is your feature request related to a problem? Please describe.
+      description: |
+        Please provide a clear and detailed description of what the problem is.
+        For example, 'I'm always frustrated when...'.
+        This will help us understand the context and the impact of the problem.
+      placeholder: Describe the problem...
+    validations:
+      required: true
+
+  - type: textarea
+    id: desired-solution
+    attributes:
+      label: "Describe the solution you'd like"
+      description: |
+        What would you like to see happen? Please provide a detailed explanation of the desired feature.
+        You may include bullet points to outline objectives, key activities, and expected outcomes.
+      placeholder: |
+        1. Objective: [What you hope to achieve with this feature]
+        2. Key Activities: [Steps to implement the feature]
+        3. Expected Outcome: [Benefits and results of the feature]
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternative-solutions
+    attributes:
+      label: "Describe alternatives you've considered"
+      description: |
+        Are there alternative solutions or features you've considered? Please describe them.
+        Understanding different possible solutions can help in finding the best path forward.
+      placeholder: Describe any alternative solutions or workarounds you have considered...
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: |
+        Add any other context or screenshots about the feature request here.
+        Links to similar features, or visual aids that support your proposal, if applicable.
+      placeholder: Insert any additional context or links to similar features here...
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        📛 To ensure a smooth issue processing, please check if a similar feature request has already been submitted before creating a new one.
+        We highly value your contributions, so please make sure to familiarize yourself with our repository's guidelines:
+        - [Code of Conduct](https://github.com/llm-agents-php/agents/blob/master/.github/CODE_OF_CONDUCT.md)
+        - [Contribution Guidelines](https://github.com/llm-agents-php/agents/blob/master/.github/CONTRIBUTING.md)
+
+...
