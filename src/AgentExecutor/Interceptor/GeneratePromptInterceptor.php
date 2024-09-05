@@ -10,7 +10,7 @@ use LLM\Agents\AgentExecutor\ExecutionInput;
 use LLM\Agents\AgentExecutor\ExecutorInterceptorInterface;
 use LLM\Agents\AgentExecutor\InterceptorHandler;
 use LLM\Agents\LLM\AgentPromptGeneratorInterface;
-use LLM\Agents\LLM\Prompt\Chat\Prompt;
+use LLM\Agents\LLM\Prompt\Chat\PromptInterface;
 
 final readonly class GeneratePromptInterceptor implements ExecutorInterceptorInterface
 {
@@ -23,7 +23,7 @@ final readonly class GeneratePromptInterceptor implements ExecutorInterceptorInt
         ExecutionInput $input,
         InterceptorHandler $next,
     ): Execution {
-        if (!$input->prompt instanceof Prompt) {
+        if (!$input->prompt instanceof PromptInterface) {
             $input = $input->withPrompt(
                 $this->promptGenerator->generate(
                     $this->agents->get($input->agent),
