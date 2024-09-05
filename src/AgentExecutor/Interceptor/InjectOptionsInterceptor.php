@@ -23,7 +23,7 @@ final readonly class InjectOptionsInterceptor implements ExecutorInterceptorInte
         $agent = $this->agents->get($input->agent);
 
         foreach ($agent->getConfiguration() as $configuration) {
-            $input->withOptions(
+            $input = $input->withOptions(
                 $input->options->with($configuration->key, $configuration->content),
             );
         }
