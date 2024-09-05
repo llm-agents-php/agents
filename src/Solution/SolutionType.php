@@ -11,4 +11,5 @@ enum SolutionType: string
     case Model = 'model';
     case Tool = 'tool';
     case Agent = 'agent';
+    case Context = 'context';
 }
