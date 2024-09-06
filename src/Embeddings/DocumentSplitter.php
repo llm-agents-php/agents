@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace LLM\Agents\Embeddings;
 
+/**
+ * Splits a document into smaller chunks that can be processed by the
+ * embedding generator and stored in the database.
+ */
 final class DocumentSplitter
 {
     public function split(

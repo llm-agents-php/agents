@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LLM\Agents\Embeddings;
 
-readonly class Embedding implements \Countable
+readonly class Embedding implements \Countable, \JsonSerializable
 {
     public function __construct(
         public array $vector,
@@ -18,5 +18,10 @@ readonly class Embedding implements \Countable
     public function count(): int
     {
         return $this->size();
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->vector;
     }
 }

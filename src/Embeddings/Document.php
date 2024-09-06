@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LLM\Agents\Embeddings;
 
-class Document implements \Stringable
+class Document implements \Stringable, \JsonSerializable
 {
     /** @var Embedding|null */
     private ?Embedding $embedding;
@@ -46,5 +46,14 @@ class Document implements \Stringable
     public function isEquals(Document $document): bool
     {
         return $this->hash === $document->hash;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'content' => $this->content,
+            'source' => $this->source,
+            'embedding' => $this->embedding,
+        ];
     }
 }
