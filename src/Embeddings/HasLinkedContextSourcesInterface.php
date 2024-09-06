@@ -6,7 +6,7 @@ namespace LLM\Agents\Embeddings;
 
 use LLM\Agents\Solution\ContextSourceLink;
 
-interface HasContextSourcesInterface
+interface HasLinkedContextSourcesInterface
 {
     /**
      * Get the sources of the context storage.

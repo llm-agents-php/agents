@@ -6,7 +6,9 @@ namespace LLM\Agents\Agent;
 
 use LLM\Agents\Agent\Exception\AgentModelException;
 use LLM\Agents\Agent\Exception\MissingModelException;
+use LLM\Agents\Embeddings\HasLinkedContextSourcesInterface;
 use LLM\Agents\Solution\AgentLink;
+use LLM\Agents\Solution\ContextSourceLink;
 use LLM\Agents\Solution\MetadataType;
 use LLM\Agents\Solution\Model;
 use LLM\Agents\Solution\Solution;
@@ -17,7 +19,10 @@ use LLM\Agents\Solution\ToolLink;
 /**
  * @psalm-type TAssociation = Solution|Model|ToolLink|AgentLink
  */
-class AgentAggregate implements AgentInterface
+class AgentAggregate implements AgentInterface,
+                                HasLinkedAgentsInterface,
+                                HasLinkedToolsInterface,
+                                HasLinkedContextSourcesInterface
 {
     /**
      * @var array<TAssociation>
@@ -53,6 +58,14 @@ class AgentAggregate implements AgentInterface
         return \array_filter(
             $this->associations,
             static fn(Solution $association): bool => $association instanceof ToolLink,
+        );
+    }
+
+    public function getContextSources(): array
+    {
+        return \array_filter(
+            $this->agent->getMetadata(),
+            static fn(Solution $association): bool => $association instanceof ContextSourceLink,
         );
     }
 

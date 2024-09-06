@@ -23,11 +23,6 @@ interface AgentInterface
 
     public function getInstruction(): string;
 
-    /**
-     * @return array<ToolLink>
-     */
-    public function getTools(): array;
-
     public function getModel(): Model;
 
     /**
