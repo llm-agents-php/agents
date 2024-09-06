@@ -28,11 +28,6 @@ interface AgentInterface
      */
     public function getTools(): array;
 
-    /**
-     * @return array<AgentLink>
-     */
-    public function getAgents(): array;
-
     public function getModel(): Model;
 
     /**
