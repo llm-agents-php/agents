@@ -64,7 +64,7 @@ class AgentAggregate implements AgentInterface,
     public function getContextSources(): array
     {
         return \array_filter(
-            $this->agent->getMetadata(),
+            $this->associations,
             static fn(Solution $association): bool => $association instanceof ContextSourceLink,
         );
     }
