@@ -741,10 +741,10 @@ package is a super handy JSON Schema Mapper for the LLM Agents project.
 **To install the package:**
 
 ```bash
-composer require llm-agents/schema-mapper
+composer require llm-agents/json-schema-mapper
 ```
 
-> **Note:** Read full documentation of the `llm-agents/schema-mapper`
+> **Note:** Read full documentation of the `llm-agents/json-schema-mapper`
 > package [here](https://github.com/llm-agents-php/schema-mapper)
 
 ### → ContextFactoryInterface
