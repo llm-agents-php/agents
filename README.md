@@ -104,10 +104,10 @@ class SiteStatusCheckerAgent extends AgentAggregate
 Now, let's implement the tool used by this agent:
 
 ```php
-use LLM\Agents\Tool\Tool;
+use LLM\Agents\Tool\PhpTool;
 use LLM\Agents\Tool\ToolLanguage;
 
-class CheckSiteAvailabilityTool extends Tool
+class CheckSiteAvailabilityTool extends PhpTool
 {
     public const NAME = 'check_site_availability';
 
@@ -217,7 +217,7 @@ execution.
 Here's an example of how you might call the linked agent:
 
 ```php
-use LLM\Agents\Tool\Tool;
+use LLM\Agents\Tool\PhpTool;
 use LLM\Agents\Agent\AgentExecutor;
 use LLM\Agents\LLM\Prompt\Chat\ToolCallResultMessage;
 use LLM\Agents\LLM\Response\ToolCalledResponse;
@@ -227,7 +227,7 @@ use LLM\Agents\Tool\ToolLanguage;
 /**
  * @extends PhpTool<AskAgentInput>
  */
-final class AskAgentTool extends Tool
+final class AskAgentTool extends PhpTool
 {
     public const NAME = 'ask_agent';
 
@@ -735,43 +735,17 @@ class PromptGeneratorBootloader extends Bootloader
 
 This class is responsible for handling conversions between JSON schemas and PHP objects.
 
-Here's an example implementation of the `LLM\Agents\Tool\SchemaMapperInterface`:
+We provide a schema mapper package that you can use to implement the `SchemaMapperInterface` in your project. This
+package is a super handy JSON Schema Mapper for the LLM Agents project.
 
-```php
-use CuyZ\Valinor\Mapper\TreeMapper;
-use LLM\Agents\Tool\SchemaMapperInterface;
-use Spiral\JsonSchemaGenerator\Generator as JsonSchemaGenerator;
+**To install the package:**
 
-final readonly class SchemaMapper implements SchemaMapperInterface
-{
-    public function __construct(
-        private JsonSchemaGenerator $generator,
-        private TreeMapper $mapper,
-    ) {}
-
-    public function toJsonSchema(string $class): array
-    {
-        if (json_validate($class)) {
-            return json_decode($class, associative: true);
-        }
-
-        if (class_exists($class)) {
-            return $this->generator->generate($class)->jsonSerialize();
-        }
-
-        throw new \InvalidArgumentException("Invalid class or JSON schema provided: $class");
-    }
-
-    public function toObject(string $json, ?string $class = null): object
-    {
-        if ($class === null) {
-            return json_decode($json, associative: false);
-        }
-
-        return $this->mapper->map($class, json_decode($json, associative: true));
-    }
-}
+```bash
+composer require llm-agents/schema-mapper
 ```
+
+> **Note:** Read full documentation of the `llm-agents/schema-mapper`
+> package [here](https://github.com/llm-agents-php/schema-mapper)
 
 ### → ContextFactoryInterface
 
