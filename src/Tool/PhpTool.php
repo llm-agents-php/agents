@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace LLM\Agents\Tool;
 
+/**
+ * @template T of object
+ * @extends Tool<T>
+ */
 abstract class PhpTool extends Tool
 {
     /**
