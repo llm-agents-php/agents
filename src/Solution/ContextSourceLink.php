@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace LLM\Agents\Solution;
 
 /**
- * A tool link is a solution that points to a tool that can be used to solve a problem.
+ * Represents a context solution that links to an embeddings source, like vector databases.
  */
-class ToolLink extends Solution
+final class ContextSourceLink extends Solution
 {
     public function __construct(
         string $name,
@@ -15,7 +15,7 @@ class ToolLink extends Solution
     ) {
         parent::__construct(
             name: $name,
-            type: SolutionType::Tool,
+            type: SolutionType::Context,
             description: $description,
         );
     }

@@ -6,6 +6,7 @@ namespace LLM\Agents\AgentExecutor\Interceptor;
 
 use LLM\Agents\Agent\AgentRepositoryInterface;
 use LLM\Agents\Agent\Execution;
+use LLM\Agents\Agent\HasLinkedToolsInterface;
 use LLM\Agents\AgentExecutor\ExecutionInput;
 use LLM\Agents\AgentExecutor\ExecutorInterceptorInterface;
 use LLM\Agents\AgentExecutor\InterceptorHandler;
@@ -28,6 +29,10 @@ final readonly class InjectToolsInterceptor implements ExecutorInterceptorInterf
         InterceptorHandler $next,
     ): Execution {
         $agent = $this->agents->get($input->agent);
+
+        if (!$agent instanceof HasLinkedToolsInterface) {
+            return $next($input);
+        }
 
         $tools = \array_map(
             fn(ToolLink $tool): ToolInterface => $this->tools->get($tool->getName()),
