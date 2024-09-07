@@ -9,5 +9,5 @@ interface EmbeddingSourceRegistryInterface
     /**
      * Register a new embedding source, like Vector database.
      */
-    public function register(string $name, EmbeddingRepositoryInterface $agent): void;
+    public function register(string $name, EmbeddingRepositoryInterface $repository): void;
 }

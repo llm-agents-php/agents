@@ -9,7 +9,7 @@ use LLM\Agents\Solution\ToolLink;
 interface HasLinkedToolsInterface
 {
     /**
-     * Get the tools linked to the agent.
+     * Get the list of tools available to the agent.
      *
      * @return array<ToolLink>
      */
