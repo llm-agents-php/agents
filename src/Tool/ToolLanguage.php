@@ -6,6 +6,10 @@ namespace LLM\Agents\Tool;
 
 use LLM\Agents\Tool\Exception\LanguageIsNotSupportedException;
 
+/**
+ * This enum defines the supported programming languages for tools.
+ * It provides a mapping between language names and their corresponding MIME types.
+ */
 enum ToolLanguage: string
 {
     case PHP = 'php';

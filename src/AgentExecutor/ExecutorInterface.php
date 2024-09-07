@@ -19,6 +19,9 @@ interface ExecutorInterface
     /**
      * Execute an agent task with the given parameters.
      *
+     * This method orchestrates the execution of the agent's task, passing it through
+     * the chain of interceptors before finally generating a response from the LLM.
+     *
      * @param string $agent The unique identifier or key of the agent to execute.
      * @param string|\Stringable|Prompt $prompt The prompt to send to the agent.
      * @param ContextInterface|null $context An optional execution context carrying user-specific information such as authentication details, session data, etc.

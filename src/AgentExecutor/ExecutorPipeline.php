@@ -16,6 +16,11 @@ use LLM\Agents\LLM\Prompt\Context;
 use LLM\Agents\LLM\Prompt\PromptInterface;
 use LLM\Agents\LLM\PromptContextInterface;
 
+/**
+ * Implements the execution pipeline for LLM agents.
+ *
+ * This class manages the flow of execution through a series of interceptors.
+ */
 final class ExecutorPipeline implements ExecutorInterface
 {
     /** @var ExecutorInterceptorInterface[] */
