@@ -17,9 +17,11 @@ abstract class Solution
         public readonly ?string $description = null,
     ) {}
 
-    public function addMetadata(SolutionMetadata $metadata): void
+    public function addMetadata(SolutionMetadata ...$metadata): void
     {
-        $this->metadata[] = $metadata;
+        foreach ($metadata as $metadatum) {
+            $this->metadata[] = $metadata;
+        }
     }
 
     public function getMetadata(): array
