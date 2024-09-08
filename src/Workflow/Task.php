@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace LLM\Agents\Workflow;
 
-class Task
+use LLM\Agents\Solution\MetadataType;
+use LLM\Agents\Solution\Solution;
+use LLM\Agents\Solution\SolutionMetadata;
+use LLM\Agents\Solution\SolutionType;
+
+class Task extends Solution
 {
     /** @var array<non-empty-string> */
     private array $dependsOn = [];
@@ -12,14 +17,16 @@ class Task
     private TaskStatus $status;
 
     public function __construct(
-        public readonly string $name,
-        public readonly string $description,
+        string $name,
+        string $description,
         public readonly string $primaryCapabilityKey,
         public readonly array $additionalCapabilityKeys = [],
         public readonly ?string $instruction = null,
         public ?string $output = null,
         ?TaskStatus $status = null,
     ) {
+        parent::__construct(name: $name, type: SolutionType::Task, description: $description);
+
         $this->status = $status ?? TaskStatus::Pending;
     }
 
@@ -59,5 +66,15 @@ class Task
     public function isCompleted(): bool
     {
         return $this->status === TaskStatus::Completed;
+    }
+
+    public function getMemory(): array
+    {
+        return \array_values(
+            \array_filter(
+                $this->getMetadata(),
+                static fn(SolutionMetadata $metadata): bool => $metadata->type === MetadataType::Memory,
+            ),
+        );
     }
 }

@@ -13,4 +13,5 @@ enum SolutionType: string
     case Agent = 'agent';
     case Context = 'context';
     case Capability = 'capability';
+    case Task = 'task';
 }

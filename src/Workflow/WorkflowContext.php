@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LLM\Agents\Workflow;
 
+use LLM\Agents\LLM\Prompt\FString;
 use LLM\Agents\LLM\PromptContextInterface;
 
 final class WorkflowContext implements \Stringable, PromptContextInterface
@@ -37,14 +38,17 @@ final class WorkflowContext implements \Stringable, PromptContextInterface
 
     public function __toString(): string
     {
-        return \sprintf(
-            <<<'PROMPT'
+        return FString::f(
+            \sprintf(
+                <<<'PROMPT'
 %s
 User input:
 %s
 PROMPT,
-            $this->instruction ? \sprintf('Instruction: %s', $this->instruction) : '',
-            $this->userInput,
+                $this->instruction ? \sprintf('Instruction: %s', $this->instruction) : '',
+                $this->userInput,
+            ),
+            $this->context,
         );
     }
 
@@ -61,6 +65,14 @@ PROMPT,
         $this->context = \array_merge($this->context, $values);
 
         return $this;
+    }
+
+    public function withValues(array $values): static
+    {
+        $self = clone $this;
+        $self->context = $values;
+
+        return $self;
     }
 
     public function getValues(): array

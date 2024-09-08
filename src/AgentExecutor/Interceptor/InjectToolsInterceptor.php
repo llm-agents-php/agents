@@ -39,6 +39,10 @@ final readonly class InjectToolsInterceptor implements ExecutorInterceptorInterf
             $agent->getTools(),
         );
 
+        if (empty($tools)) {
+            return $next($input);
+        }
+
         return $next(
             $input->withOptions(
                 $input->options->with(

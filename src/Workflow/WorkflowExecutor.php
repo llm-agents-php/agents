@@ -6,6 +6,7 @@ namespace LLM\Agents\Workflow;
 
 use LLM\Agents\Agent\Exception\AgentNotFoundException;
 use LLM\Agents\AgentExecutor\ExecutorInterface;
+use LLM\Agents\Solution\SolutionMetadata;
 use LLM\Agents\Workflow\Exception\MissingDependencyException;
 
 final class WorkflowExecutor
@@ -119,7 +120,15 @@ final class WorkflowExecutor
         return $this->agentExecutor->execute(
             agent: $agent->getKey(),
             prompt: $context,
-            promptContext: $context,
+            promptContext: $context->withValues([
+                'dynamic_memory' => \implode(
+                    PHP_EOL,
+                    \array_map(
+                        static fn(SolutionMetadata $metadata) => $metadata->content,
+                        $task->getMemory(),
+                    ),
+                ),
+            ]),
         )->result->content;
     }
 }
