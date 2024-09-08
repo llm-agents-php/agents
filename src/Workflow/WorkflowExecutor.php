@@ -83,7 +83,7 @@ final class WorkflowExecutor
         try {
             $result = $this->executeTask($task, $context->withInstruction($task->getInstruction()));
             $this->results[$task->name] = new TaskResult($task, TaskStatus::Completed, $result);
-            $context->add($task->name . '_result', $result);
+            $context->addValues([$task->name . '_result' => $result]);
             $task->setStatus(TaskStatus::Completed);
         } catch (\Exception $e) {
             $this->results[$task->name] = new TaskResult($task, TaskStatus::Failed, $e->getMessage());
@@ -104,7 +104,7 @@ final class WorkflowExecutor
     private function buildTaskContext(Task $task, WorkflowContext $context): WorkflowContext
     {
         foreach ($task->getDependsOn() as $dependency) {
-            $context->add($dependency . '_result', $this->results[$dependency]->result);
+            $context->addValues([$dependency . '_result' => $this->results[$dependency]->result]);
         }
 
         return $context;

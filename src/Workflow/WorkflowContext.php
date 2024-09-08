@@ -24,8 +24,6 @@ final class WorkflowContext implements \Stringable, PromptContextInterface
         return $self;
     }
 
-    public function add(string $key, mixed $value): void {}
-
     public function get(string $key, mixed $default = null): mixed
     {
         return $this->context[$key] ?? $default;
