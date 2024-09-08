@@ -16,40 +16,49 @@ final readonly class TaskRouter
 
     public function routeTask(Task $task): ?AgentInterface
     {
-        $suitableAgents = $this->agentRepository->findByCapabilityKey($task->primaryCapabilityKey);
-
-        $suitableAgents = \iterator_to_array($suitableAgents);
-
-        $suitableAgents = \array_filter(
-            $suitableAgents,
-            static fn(AgentInterface $agent) => $agent instanceof HasCapabilitiesInterface,
+        return $this->selectMostSuitableAgent(
+            agents: $this->agentRepository->findByCapabilityKey($task->primaryCapabilityKey),
+            task: $task,
         );
-
-        if (empty($suitableAgents)) {
-            return null;
-        }
-
-        \usort($suitableAgents, function (HasCapabilitiesInterface $a, HasCapabilitiesInterface $b) use ($task) {
-            return $this->calculateAgentSuitability($b, $task) - $this->calculateAgentSuitability($a, $task);
-        });
-
-        return $suitableAgents[0];
     }
 
-    private function calculateAgentSuitability(HasCapabilitiesInterface $agent, Task $task): int
+    private function selectMostSuitableAgent(iterable $agents, Task $task): ?AgentInterface
     {
-        $suitability = 0;
+        $suitableAgents = [];
 
-        if ($agent->hasCapability($task->primaryCapabilityKey)) {
-            $suitability += 10;
-        }
-
-        foreach ($task->additionalCapabilityKeys as $capabilityKey) {
-            if ($agent->hasCapability($capabilityKey)) {
-                $suitability += 5;
+        // Filter agents that have the primary capability and collect suitability scores
+        foreach ($agents as $agent) {
+            if ($agent instanceof HasCapabilitiesInterface && $agent->hasCapability($task->primaryCapabilityKey)) {
+                $suitabilityScore = $this->calculateAgentSuitability($agent, $task);
+                $suitableAgents[] = ['agent' => $agent, 'score' => $suitabilityScore];
             }
         }
 
-        return $suitability;
+        // Sort agents based on the calculated suitability scores in descending order
+        \usort($suitableAgents, function ($a, $b) {
+            return $b['score'] <=> $a['score'];
+        });
+
+        // Return the most suitable agent or null if no suitable agents were found
+        return !empty($suitableAgents) ? $suitableAgents[0]['agent'] : null;
+    }
+
+    private function calculateAgentSuitability(AgentInterface $agent, Task $task): int
+    {
+        $suitabilityScore = 0;
+
+        // Primary capability is a must-have, add a high base score
+        if ($agent->hasCapability($task->primaryCapabilityKey)) {
+            $suitabilityScore += 10;
+        }
+
+        // Additional capabilities contribute less to the score but are still important
+        foreach ($task->additionalCapabilityKeys as $capabilityKey) {
+            if ($agent->hasCapability($capabilityKey)) {
+                $suitabilityScore += 3;
+            }
+        }
+
+        return $suitabilityScore;
     }
 }

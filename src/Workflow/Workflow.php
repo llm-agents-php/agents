@@ -15,6 +15,11 @@ final class Workflow
         public readonly string $description,
     ) {}
 
+    public function getTask(string $name): ?Task
+    {
+        return $this->tasks[$name] ?? null;
+    }
+
     public function addTask(Task $task): self
     {
         $this->tasks[] = $task;
@@ -35,5 +40,17 @@ final class Workflow
     public function getTasks(): array
     {
         return $this->tasks;
+    }
+
+    public function validateDependencies(): bool
+    {
+        foreach ($this->tasks as $task) {
+            foreach ($task->getDependsOn() as $dependencyName) {
+                if (!isset($this->tasks[$dependencyName])) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

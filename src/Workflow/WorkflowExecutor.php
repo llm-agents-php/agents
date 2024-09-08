@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace LLM\Agents\Workflow;
 
+use LLM\Agents\Agent\Exception\AgentNotFoundException;
 use LLM\Agents\AgentExecutor\ExecutorInterface;
+use LLM\Agents\Workflow\Exception\MissingDependencyException;
 
 final class WorkflowExecutor
 {
+    /** @var array<non-empty-string, TaskResult> */
     private array $results = [];
 
     public function __construct(
@@ -15,27 +18,47 @@ final class WorkflowExecutor
         private readonly ExecutorInterface $agentExecutor,
     ) {}
 
-    public function execute(Workflow $workflow, string $userInput): array
+    public function execute(Workflow $workflow, string $userInput): WorkflowResult
     {
-        $context = new WorkflowContext(userInput: $userInput);
-
-        foreach ($workflow->getTasks() as $task) {
-            if (!$this->areDependenciesMet($task)) {
-                throw new \RuntimeException("Dependencies not met for task: " . $task->name);
-            }
-
-            $context = $this->buildTaskContext($task, $context);
-
-            $this->results[$task->name] = $this->executeTask($task, $context);
+        if (!$workflow->validateDependencies()) {
+            throw new MissingDependencyException('Workflow has missing dependencies');
         }
 
-        return $this->results;
+        $context = new WorkflowContext(userInput: $userInput);
+        foreach ($workflow->getTasks() as $task) {
+            try {
+                $this->processTask($task, $context);
+            } catch (\Exception $e) {
+                $this->results[$task->name] = new TaskResult($task, TaskStatus::Failed, $e->getMessage());
+            }
+        }
+
+        return new WorkflowResult($workflow, $this->results);
+    }
+
+    private function processTask(Task $task, WorkflowContext $context): void
+    {
+        if (!$this->areDependenciesMet($task)) {
+            throw new MissingDependencyException("Dependencies not met for task: " . $task->name);
+        }
+
+        $task->setStatus(TaskStatus::InProgress);
+        $context = $this->buildTaskContext($task, $context);
+
+        try {
+            $result = $this->executeTask($task, $context);
+            $this->results[$task->name] = new TaskResult($task, TaskStatus::Completed, $result);
+            $task->setStatus(TaskStatus::Completed);
+        } catch (\Exception $e) {
+            $this->results[$task->name] = new TaskResult($task, TaskStatus::Failed, $e->getMessage());
+            $task->setStatus(TaskStatus::Failed);
+        }
     }
 
     private function areDependenciesMet(Task $task): bool
     {
         foreach ($task->getDependsOn() as $dependency) {
-            if (!isset($this->results[$dependency])) {
+            if (!isset($this->results[$dependency]) || $this->results[$dependency]->status !== TaskStatus::Completed) {
                 return false;
             }
         }
@@ -45,9 +68,8 @@ final class WorkflowExecutor
     private function buildTaskContext(Task $task, WorkflowContext $context): WorkflowContext
     {
         foreach ($task->getDependsOn() as $dependency) {
-            $context->add($dependency . '_result', $this->results[$dependency]);
+            $context->add($dependency . '_result', $this->results[$dependency]->result);
         }
-
         return $context;
     }
 
@@ -55,7 +77,7 @@ final class WorkflowExecutor
     {
         $agent = $this->taskRouter->routeTask($task);
         if (!$agent) {
-            throw new \RuntimeException("No suitable agent found for task: " . $task->name);
+            throw new AgentNotFoundException("No suitable agent found for task: " . $task->name);
         }
 
         return $this->agentExecutor->execute($agent->getKey(), $context)->result->content;
