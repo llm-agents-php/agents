@@ -140,11 +140,9 @@ class AgentAggregate implements AgentInterface,
         $this->associations[] = $association;
     }
 
-    public function addMetadata(SolutionMetadata ...$metadatum): void
+    public function addMetadata(SolutionMetadata ...$metadata): void
     {
-        foreach ($metadatum as $metadata) {
-            $this->agent->addMetadata($metadata);
-        }
+        $this->agent->addMetadata(...$metadata);
     }
 
     private function validateDependency(Solution $association): void

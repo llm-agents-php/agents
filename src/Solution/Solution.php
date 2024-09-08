@@ -20,7 +20,7 @@ abstract class Solution
     public function addMetadata(SolutionMetadata ...$metadata): void
     {
         foreach ($metadata as $metadatum) {
-            $this->metadata[] = $metadata;
+            $this->metadata[] = $metadatum;
         }
     }
 
