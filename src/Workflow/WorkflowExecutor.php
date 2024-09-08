@@ -37,21 +37,7 @@ final class WorkflowExecutor
         foreach ($tasks as $task) {
             try {
                 if ($task instanceof DecisionTask) {
-                    if ($context->getExplorationDepth() >= $this->maxRecursionDepth) {
-                        $this->results[$task->name] = new TaskResult(
-                            $task,
-                            TaskStatus::Completed,
-                            'Max recursion depth reached',
-                        );
-                        continue;
-                    }
-
-                    $decision = $this->makeDecision($task, $context);
-                    $branch = $workflow->getBranch($task->name, $decision);
-                    if ($branch) {
-                        $context->incrementExplorationDepth();
-                        $this->executeTasks($branch->getTasks(), $workflow, $context);
-                    }
+                    $this->handleDecisionTask($task, $workflow, $context);
                 } else {
                     $this->processTask($task, $context);
                 }
@@ -59,6 +45,29 @@ final class WorkflowExecutor
                 $this->results[$task->name] = new TaskResult($task, TaskStatus::Failed, $e->getMessage());
             }
         }
+    }
+
+    private function handleDecisionTask(DecisionTask $task, Workflow $workflow, WorkflowContext $context): void
+    {
+        $decisionContext = $context->pushContext([
+            'task_name' => $task->name,
+            'exploration_depth' => ($context->get('exploration_depth', 0) + 1),
+        ]);
+
+        if ($decisionContext->get('exploration_depth') > $this->maxRecursionDepth) {
+            $this->results[$task->name] = new TaskResult($task, TaskStatus::Completed, 'Max recursion depth reached');
+            $context->popContext();
+            return;
+        }
+
+        $decision = $this->makeDecision($task, $decisionContext);
+        $branch = $workflow->getBranch($task->name, $decision);
+
+        if ($branch) {
+            $this->executeTasks($branch->getTasks(), $workflow, $decisionContext);
+        }
+
+        $context->popContext();
     }
 
     private function makeDecision(DecisionTask $task, WorkflowContext $context): string

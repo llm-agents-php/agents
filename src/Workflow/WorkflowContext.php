@@ -10,13 +10,27 @@ use LLM\Agents\LLM\PromptContextInterface;
 final class WorkflowContext implements \Stringable, PromptContextInterface
 {
     private array $context = [];
-    private int $explorationDepth = 0;
     private ?string $instruction = null;
-    private array $accumulatedFindings = [];
+    private array $stack = [];
 
     public function __construct(
         private readonly string $userInput,
     ) {}
+
+    public function pushContext(array $context): self
+    {
+        $this->stack[] = $this->context;
+        $this->context = \array_merge($this->context, $context);
+        return $this;
+    }
+
+    public function popContext(): self
+    {
+        if (!empty($this->stack)) {
+            $this->context = \array_pop($this->stack);
+        }
+        return $this;
+    }
 
     public function withInstruction(string $instruction): self
     {
@@ -78,27 +92,5 @@ PROMPT,
     public function getValues(): array
     {
         return $this->context;
-    }
-
-    public function incrementExplorationDepth(): self
-    {
-        $this->explorationDepth++;
-        return $this;
-    }
-
-    public function getExplorationDepth(): int
-    {
-        return $this->explorationDepth;
-    }
-
-    public function addFindings(array $findings): self
-    {
-        $this->accumulatedFindings = array_merge($this->accumulatedFindings, $findings);
-        return $this;
-    }
-
-    public function getAccumulatedFindings(): array
-    {
-        return $this->accumulatedFindings;
     }
 }
