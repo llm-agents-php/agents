@@ -8,6 +8,7 @@ use LLM\Agents\Agent\Exception\AgentModelException;
 use LLM\Agents\Agent\Exception\MissingModelException;
 use LLM\Agents\Embeddings\HasLinkedContextSourcesInterface;
 use LLM\Agents\Solution\AgentLink;
+use LLM\Agents\Solution\Capability;
 use LLM\Agents\Solution\ContextSourceLink;
 use LLM\Agents\Solution\MetadataType;
 use LLM\Agents\Solution\Model;
@@ -22,7 +23,8 @@ use LLM\Agents\Solution\ToolLink;
 class AgentAggregate implements AgentInterface,
                                 HasLinkedAgentsInterface,
                                 HasLinkedToolsInterface,
-                                HasLinkedContextSourcesInterface
+                                HasLinkedContextSourcesInterface,
+                                HasCapabilitiesInterface
 {
     /**
      * @var array<TAssociation>
@@ -121,6 +123,16 @@ class AgentAggregate implements AgentInterface,
         );
     }
 
+    public function getCapabilities(): array
+    {
+        return \array_values(
+            \array_filter(
+                $this->associations,
+                static fn(Solution $association): bool => $association instanceof Capability,
+            ),
+        );
+    }
+
     public function addAssociation(Solution $association): void
     {
         $this->validateDependency($association);
@@ -144,5 +156,16 @@ class AgentAggregate implements AgentInterface,
                 }
             }
         }
+    }
+
+    public function hasCapability(string $key): bool
+    {
+        foreach ($this->getCapabilities() as $capability) {
+            if ($capability->name === $key) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -34,4 +34,9 @@ interface AgentRepositoryInterface
      * @param non-empty-string $key The key to check for existence.
      */
     public function has(string $key): bool;
+
+    /**
+     * @return array<AgentInterface>
+     */
+    public function findByCapabilityKey(string $capabilityKey): iterable;
 }

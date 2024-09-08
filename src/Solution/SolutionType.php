@@ -12,4 +12,5 @@ enum SolutionType: string
     case Tool = 'tool';
     case Agent = 'agent';
     case Context = 'context';
+    case Capability = 'capability';
 }
