@@ -8,5 +8,19 @@ use LLM\Agents\LLM\PromptContextInterface;
 
 class Context implements PromptContextInterface
 {
+    private array $values = [];
 
+    public function __construct() {}
+
+    public function addValues(array $values): static
+    {
+        $this->values = \array_merge($this->values, $values);
+
+        return $this;
+    }
+
+    public function getValues(): array
+    {
+        return $this->values;
+    }
 }
