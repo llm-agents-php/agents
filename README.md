@@ -11,20 +11,20 @@
 
 # LLM Agents PHP SDK
 
-LLM Agents is a powerful PHP library for building and managing Language Model (LLM) based agents. This package provides
-a flexible and extensible framework for creating autonomous agents that can perform complex tasks, make decisions, and
-interact with various tools and APIs.
+LLM Agents is a PHP library for building and managing Language Model (LLM) based agents. It provides a framework for creating autonomous agents that can perform complex tasks, make decisions, and interact with various tools and APIs.
 
-> There is an article on Medium where I explaind what is LLM agents: [A PHP dev’s dream: An AI home that really gets you
-](https://butschster.medium.com/a-php-devs-dream-an-ai-home-that-really-gets-you-dd97ae2ca0b0)
+The library enables developers to integrate LLM capabilities into PHP applications efficiently, allowing for the creation of intelligent systems that can understand and respond to user inputs, process information, and carry out actions based on that processing.The library enables developers to integrate LLM capabilities into PHP applications efficiently.
+
+> For a comprehensive explanation of LLM agents and their applications, you can read the article: A PHP dev's dream:
+> [A PHP dev’s dream: An AI home that really gets you](https://butschster.medium.com/a-php-devs-dream-an-ai-home-that-really-gets-you-dd97ae2ca0b0)
 
 [![PHP](https://img.shields.io/packagist/php-v/llm-agents/agents.svg?style=flat-square)](https://packagist.org/packages/llm-agents/agents)
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/llm-agents/agents.svg?style=flat-square)](https://packagist.org/packages/llm-agents/agents)
 [![Total Downloads](https://img.shields.io/packagist/dt/llm-agents/agents.svg?style=flat-square)](https://packagist.org/packages/llm-agents/agents)
 
-> For a complete example with sample agents and a CLI interface to interact with them, check out our sample application
-> repository https://github.com/llm-agents-php/sample-app. This sample app demonstrates practical implementations and
-> usage patterns of the LLM Agents library.
+> For a complete example with sample agents and a CLI interface to interact with them, check out our sample application repository https://github.com/llm-agents-php/sample-app.
+> 
+> This sample app demonstrates practical implementations and usage patterns of the LLM Agents library.
 
 The package does not include any specific LLM implementation. Instead, it provides a framework for creating agents that
 can interact with any LLM service or API.
@@ -919,14 +919,9 @@ classDiagram
 Thank you for considering contributing to the llm-agents-php community! We are open to all kinds of contributions. If
 you want to:
 
--
-
-🤔 [Suggest a feature](https://github.com/llm-agents-php/agents/issues/new?assignees=&labels=type%3A+enhancement&projects=&template=2-feature-request.yml&title=%5BFeature%5D%3A+)
--
-🐛 [Report an issue](https://github.com/llm-agents-php/agents/issues/new?assignees=&labels=type%3A+documentation%2Ctype%3A+maintenance&projects=&template=1-bug-report.yml&title=%5BBug%5D%3A+)
--
-📖 [Improve documentation](https://github.com/llm-agents-php/agents/issues/new?assignees=&labels=type%3A+documentation%2Ctype%3A+maintenance&projects=&template=4-docs-bug-report.yml&title=%5BDocs%5D%3A+)
-
+- 🤔 [Suggest a feature](https://github.com/llm-agents-php/agents/issues/new?assignees=&labels=type%3A+enhancement&projects=&template=2-feature-request.yml&title=%5BFeature%5D%3A+)
+- 🐛 [Report an issue](https://github.com/llm-agents-php/agents/issues/new?assignees=&labels=type%3A+documentation%2Ctype%3A+maintenance&projects=&template=1-bug-report.yml&title=%5BBug%5D%3A+)
+- 📖 [Improve documentation](https://github.com/llm-agents-php/agents/issues/new?assignees=&labels=type%3A+documentation%2Ctype%3A+maintenance&projects=&template=4-docs-bug-report.yml&title=%5BDocs%5D%3A+)
 - 👨‍💻 Contribute to the code
 
 You are more than welcome. Before contributing, kindly check our [contribution guidelines](.github/CONTRIBUTING.md).
