@@ -7,10 +7,19 @@ namespace LLM\Agents\Workflow;
 final class WorkflowContext implements \Stringable
 {
     private array $context = [];
+    private ?string $instruction = null;
 
     public function __construct(
         private readonly string $userInput,
     ) {}
+
+    public function withInstruction(string $instruction): self
+    {
+        $self = clone $this;
+        $self->instruction = $instruction;
+
+        return $self;
+    }
 
     public function add(string $key, mixed $value): void
     {
@@ -36,11 +45,13 @@ final class WorkflowContext implements \Stringable
     {
         return \sprintf(
             <<<'PROMPT'
+%s
 User input:
 %s
 Context:
 %s
 PROMPT,
+            $this->instruction ? \sprintf('Instruction: %s', $this->instruction) : '',
             $this->userInput,
             \json_encode($this->context),
         );

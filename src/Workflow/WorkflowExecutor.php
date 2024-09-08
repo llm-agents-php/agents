@@ -25,15 +25,49 @@ final class WorkflowExecutor
         }
 
         $context = new WorkflowContext(userInput: $userInput);
-        foreach ($workflow->getTasks() as $task) {
+        $this->executeTasks($workflow->getTasks(), $workflow, $context);
+
+        return new WorkflowResult($workflow, $this->results);
+    }
+
+    private function executeTasks(array $tasks, Workflow $workflow, WorkflowContext $context): void
+    {
+        foreach ($tasks as $task) {
             try {
-                $this->processTask($task, $context);
+                if ($task instanceof DecisionTask) {
+                    $decision = $this->makeDecision($task, $context);
+                    $branch = $workflow->getBranch($task->name, $decision);
+                    if ($branch) {
+                        $this->executeTasks($branch->tasks, $workflow, $context);
+                    }
+                } else {
+                    $this->processTask($task, $context);
+                }
             } catch (\Exception $e) {
                 $this->results[$task->name] = new TaskResult($task, TaskStatus::Failed, $e->getMessage());
             }
         }
+    }
 
-        return new WorkflowResult($workflow, $this->results);
+    private function makeDecision(DecisionTask $task, WorkflowContext $context): string
+    {
+        $retries = 3;
+
+        do {
+            $result = $this->executeTask(
+                $task,
+                $context->withInstruction($task->getInstruction()),
+            );
+
+            // Ensure the decision is one of the possible outcomes
+            if ($task->isOutcomeValid($result)) {
+                return $result;
+            }
+
+            $retries--;
+        } while ($retries > 0);
+
+        throw new \RuntimeException('Failed to make a valid decision');
     }
 
     private function processTask(Task $task, WorkflowContext $context): void
@@ -46,8 +80,9 @@ final class WorkflowExecutor
         $context = $this->buildTaskContext($task, $context);
 
         try {
-            $result = $this->executeTask($task, $context);
+            $result = $this->executeTask($task, $context->withInstruction($task->getInstruction()));
             $this->results[$task->name] = new TaskResult($task, TaskStatus::Completed, $result);
+            $context->add($task->name . '_result', $result);
             $task->setStatus(TaskStatus::Completed);
         } catch (\Exception $e) {
             $this->results[$task->name] = new TaskResult($task, TaskStatus::Failed, $e->getMessage());
@@ -80,6 +115,9 @@ final class WorkflowExecutor
             throw new AgentNotFoundException("No suitable agent found for task: " . $task->name);
         }
 
-        return $this->agentExecutor->execute($agent->getKey(), $context)->result->content;
+        return $this->agentExecutor->execute(
+            $agent->getKey(),
+            $context,
+        )->result->content;
     }
 }

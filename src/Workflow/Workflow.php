@@ -8,7 +8,8 @@ final class Workflow
 {
     /** @var array<Task> */
     private array $tasks = [];
-    private ?Loop $loop = null;
+    /** @var array<Branch> */
+    private array $branches = [];
 
     public function __construct(
         public readonly string $name,
@@ -26,20 +27,24 @@ final class Workflow
         return $this;
     }
 
-    public function setLoop(Loop $loop): self
-    {
-        $this->loop = $loop;
-        return $this;
-    }
-
-    public function getLoop(): ?Loop
-    {
-        return $this->loop;
-    }
-
     public function getTasks(): array
     {
         return $this->tasks;
+    }
+
+    public function addBranch(DecisionTask $decisionTask, Branch ...$branches): self
+    {
+        $this->tasks[] = $decisionTask;
+
+        foreach ($branches as $branch) {
+            $this->branches[$decisionTask->name][$branch->name] = $branch;
+        }
+        return $this;
+    }
+
+    public function getBranch(string $decisionTaskName, string $branchName): ?Branch
+    {
+        return $this->branches[$decisionTaskName][$branchName] ?? null;
     }
 
     public function validateDependencies(): bool

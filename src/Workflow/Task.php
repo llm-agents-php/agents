@@ -16,10 +16,16 @@ class Task
         public readonly string $description,
         public readonly string $primaryCapabilityKey,
         public readonly array $additionalCapabilityKeys = [],
+        public readonly ?string $instruction = null,
         public ?string $output = null,
         ?TaskStatus $status = null,
     ) {
         $this->status = $status ?? TaskStatus::Pending;
+    }
+
+    public function getInstruction(): ?string
+    {
+        return $this->instruction;
     }
 
     public function addDependency(string $taskName): self
