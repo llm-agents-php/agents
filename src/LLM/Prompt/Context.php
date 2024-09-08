@@ -10,8 +10,6 @@ class Context implements PromptContextInterface
 {
     private array $values = [];
 
-    public function __construct() {}
-
     public function addValues(array $values): static
     {
         $this->values = \array_merge($this->values, $values);

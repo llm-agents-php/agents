@@ -105,6 +105,7 @@ final class WorkflowExecutor
         foreach ($task->getDependsOn() as $dependency) {
             $context->add($dependency . '_result', $this->results[$dependency]->result);
         }
+
         return $context;
     }
 
@@ -116,8 +117,9 @@ final class WorkflowExecutor
         }
 
         return $this->agentExecutor->execute(
-            $agent->getKey(),
-            $context,
+            agent: $agent->getKey(),
+            prompt: $context,
+            promptContext: $context,
         )->result->content;
     }
 }

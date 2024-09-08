@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace LLM\Agents\Workflow;
 
-final class WorkflowContext implements \Stringable
+use LLM\Agents\LLM\PromptContextInterface;
+
+final class WorkflowContext implements \Stringable, PromptContextInterface
 {
     private array $context = [];
     private ?string $instruction = null;
@@ -21,10 +23,7 @@ final class WorkflowContext implements \Stringable
         return $self;
     }
 
-    public function add(string $key, mixed $value): void
-    {
-        $this->context[$key] = $value;
-    }
+    public function add(string $key, mixed $value): void {}
 
     public function get(string $key, mixed $default = null): mixed
     {
@@ -36,11 +35,6 @@ final class WorkflowContext implements \Stringable
         return isset($this->context[$key]);
     }
 
-    public function getUserInput(): string
-    {
-        return $this->userInput;
-    }
-
     public function __toString(): string
     {
         return \sprintf(
@@ -48,12 +42,9 @@ final class WorkflowContext implements \Stringable
 %s
 User input:
 %s
-Context:
-%s
 PROMPT,
             $this->instruction ? \sprintf('Instruction: %s', $this->instruction) : '',
             $this->userInput,
-            \json_encode($this->context),
         );
     }
 
@@ -63,5 +54,17 @@ PROMPT,
             'user_input' => $this->userInput,
             'context' => $this->context,
         ];
+    }
+
+    public function addValues(array $values): static
+    {
+        $this->context = \array_merge($this->context, $values);
+
+        return $this;
+    }
+
+    public function getValues(): array
+    {
+        return $this->context;
     }
 }
