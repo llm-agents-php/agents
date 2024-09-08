@@ -70,7 +70,7 @@ PROMPT,
     public function withValues(array $values): static
     {
         $self = clone $this;
-        $self->context = $values;
+        $self->context = \array_merge($self->context, $values);
 
         return $self;
     }
