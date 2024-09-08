@@ -10,7 +10,9 @@ use LLM\Agents\LLM\PromptContextInterface;
 final class WorkflowContext implements \Stringable, PromptContextInterface
 {
     private array $context = [];
+    private int $explorationDepth = 0;
     private ?string $instruction = null;
+    private array $accumulatedFindings = [];
 
     public function __construct(
         private readonly string $userInput,
@@ -76,5 +78,27 @@ PROMPT,
     public function getValues(): array
     {
         return $this->context;
+    }
+
+    public function incrementExplorationDepth(): self
+    {
+        $this->explorationDepth++;
+        return $this;
+    }
+
+    public function getExplorationDepth(): int
+    {
+        return $this->explorationDepth;
+    }
+
+    public function addFindings(array $findings): self
+    {
+        $this->accumulatedFindings = array_merge($this->accumulatedFindings, $findings);
+        return $this;
+    }
+
+    public function getAccumulatedFindings(): array
+    {
+        return $this->accumulatedFindings;
     }
 }

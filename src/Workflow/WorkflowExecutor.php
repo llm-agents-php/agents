@@ -17,6 +17,7 @@ final class WorkflowExecutor
     public function __construct(
         private readonly TaskRouter $taskRouter,
         private readonly ExecutorInterface $agentExecutor,
+        private int $maxRecursionDepth = 10,
     ) {}
 
     public function execute(Workflow $workflow, string $userInput): WorkflowResult
@@ -36,10 +37,20 @@ final class WorkflowExecutor
         foreach ($tasks as $task) {
             try {
                 if ($task instanceof DecisionTask) {
+                    if ($context->getExplorationDepth() >= $this->maxRecursionDepth) {
+                        $this->results[$task->name] = new TaskResult(
+                            $task,
+                            TaskStatus::Completed,
+                            'Max recursion depth reached',
+                        );
+                        continue;
+                    }
+
                     $decision = $this->makeDecision($task, $context);
                     $branch = $workflow->getBranch($task->name, $decision);
                     if ($branch) {
-                        $this->executeTasks($branch->tasks, $workflow, $context);
+                        $context->incrementExplorationDepth();
+                        $this->executeTasks($branch->getTasks(), $workflow, $context);
                     }
                 } else {
                     $this->processTask($task, $context);

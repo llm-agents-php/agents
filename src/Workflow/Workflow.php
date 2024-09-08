@@ -32,6 +32,18 @@ final class Workflow
         return $this->tasks;
     }
 
+    public function addRecursiveBranch(DecisionTask $decisionTask, Branch ...$branches): self
+    {
+        $this->addBranch($decisionTask, ...$branches);
+
+        // Add the decision task to the end of each branch to create recursion
+        foreach ($branches as $branch) {
+            $branch->addTask($decisionTask);
+        }
+
+        return $this;
+    }
+
     public function addBranch(DecisionTask $decisionTask, Branch ...$branches): self
     {
         $this->tasks[] = $decisionTask;
