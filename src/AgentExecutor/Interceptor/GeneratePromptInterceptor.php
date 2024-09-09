@@ -12,6 +12,9 @@ use LLM\Agents\AgentExecutor\InterceptorHandler;
 use LLM\Agents\LLM\AgentPromptGeneratorInterface;
 use LLM\Agents\LLM\Prompt\Chat\PromptInterface;
 
+/**
+ * This interceptor is responsible for generating the prompt for the agent.
+ */
 final readonly class GeneratePromptInterceptor implements ExecutorInterceptorInterface
 {
     public function __construct(
