@@ -24,12 +24,14 @@ final readonly class ToolExecutorInterceptor implements ExecutorInterceptorInter
     {
         $execution = $next($input);
 
+        // Check if we should return the tool result instead of adding it to the prompt.
         $shouldReturnToolResult = $input->options->get('return_tool_result', false);
 
         while (true) {
             $result = $execution->result;
             $prompt = $execution->prompt;
 
+            // If the result is a ToolCalledResponse, we need to call the tools.
             if ($result instanceof ToolCalledResponse) {
                 // First, call all tools.
                 $toolsResponse = [];
@@ -51,7 +53,9 @@ final readonly class ToolExecutorInterceptor implements ExecutorInterceptorInter
                     $input = $input->withPrompt($prompt->withAddedMessage($toolResponse));
                 }
 
+                // Continue to the next execution.
                 $execution = $next($input);
+
                 continue;
             }
 
