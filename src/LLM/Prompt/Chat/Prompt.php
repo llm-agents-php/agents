@@ -18,7 +18,7 @@ final class Prompt implements PromptInterface
         protected array $variables = [],
     ) {
         foreach ($this->messages as $message) {
-            if (! $message instanceof MessageInterface) {
+            if (!$message instanceof MessageInterface) {
                 throw new PromptException(\sprintf('Messages must be of type %s.', MessageInterface::class));
             }
         }
@@ -48,10 +48,25 @@ final class Prompt implements PromptInterface
         return $prompt;
     }
 
-    public function withAddedMessage(MessageInterface $message): self
+    public function withAddedMessage(MessageInterface ...$messages): self
     {
         $prompt = clone $this;
-        $prompt->messages[] = $message;
+        foreach ($messages as $message) {
+            $prompt->messages[] = $message;
+        }
+
+        return $prompt;
+    }
+
+    public function withoutTempMessages(): PromptInterface
+    {
+        $prompt = clone $this;
+        $prompt->messages = \array_values(
+            \array_filter(
+                $this->messages,
+                static fn(MessageInterface $message) => !$message instanceof TempMessageInterface,
+            ),
+        );
 
         return $prompt;
     }
@@ -99,7 +114,7 @@ final class Prompt implements PromptInterface
             ),
         ];
 
-        if (! empty($this->variables)) {
+        if (!empty($this->variables)) {
             $result['variables'] = $this->variables;
         }
 

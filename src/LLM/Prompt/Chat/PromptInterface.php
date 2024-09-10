@@ -18,4 +18,8 @@ interface PromptInterface extends ChatPromptInterface, \Stringable
      * @return MessageInterface[]
      */
     public function getMessages(): array;
+
+    public function withAddedMessage(MessageInterface ...$messages): self;
+
+    public function withoutTempMessages(): self;
 }

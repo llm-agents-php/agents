@@ -27,7 +27,7 @@ final class AgentRegistry implements AgentRegistryInterface, AgentRepositoryInte
 
     public function get(string $key): AgentInterface
     {
-        if (! $this->has($key)) {
+        if (!$this->has($key)) {
             throw new AgentNotFoundException(\sprintf('Agent with key \'%s\' is not registered.', $key));
         }
 

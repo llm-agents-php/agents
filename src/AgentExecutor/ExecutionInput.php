@@ -6,7 +6,7 @@ namespace LLM\Agents\AgentExecutor;
 
 use LLM\Agents\LLM\ContextInterface;
 use LLM\Agents\LLM\OptionsInterface;
-use LLM\Agents\LLM\Prompt\Chat\PromptInterface;
+use LLM\Agents\LLM\Prompt\PromptInterface;
 use LLM\Agents\LLM\PromptContextInterface;
 
 /**

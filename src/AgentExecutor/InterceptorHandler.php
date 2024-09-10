@@ -6,6 +6,9 @@ namespace LLM\Agents\AgentExecutor;
 
 use LLM\Agents\Agent\Execution;
 
+/**
+ * @internal
+ */
 final readonly class InterceptorHandler
 {
     public function __construct(

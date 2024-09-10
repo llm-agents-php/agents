@@ -7,6 +7,9 @@ namespace LLM\Agents\LLM\Prompt\Chat;
 use LLM\Agents\LLM\Prompt\MessageInterface;
 use LLM\Agents\LLM\Prompt\SerializableInterface;
 
+/**
+ * @internal
+ */
 final readonly class ToolCallResultMessage implements MessageInterface, HasRoleInterface, SerializableInterface
 {
     public function __construct(
