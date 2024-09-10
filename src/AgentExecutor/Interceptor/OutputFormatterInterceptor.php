@@ -36,19 +36,17 @@ final readonly class OutputFormatterInterceptor implements ExecutorInterceptorIn
             throw new FormatterException('Prompt must implement PromptInterface');
         }
 
+        if (!$outputFormatter instanceof FormatterInterface) {
+            $outputFormatter = $this->createFormatter($outputFormatter);
+        }
+
         $input = $input->withPrompt(
             $input->prompt->withValues(
                 ['output_format_instruction' => $outputFormatter->getInstruction()],
             ),
         );
 
-        if ($outputFormatter instanceof FormatterInterface) {
-            return $this->formatResponse($next($input), $outputFormatter);
-        }
-
-        if (\is_string($outputFormatter)) {
-            return $this->formatResponse($next($input), $this->createFormatter($outputFormatter));
-        }
+        return $this->formatResponse($next($input), $outputFormatter);
     }
 
     private function formatResponse(Execution $execution, FormatterInterface $outputFormatter): Execution

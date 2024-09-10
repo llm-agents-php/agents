@@ -30,15 +30,15 @@ final class JsonSchemaFormatter implements FormatterInterface
         $self = clone $this;
 
         if (\class_exists($jsonSchema)) {
-            $this->class = $jsonSchema;
-            $jsonSchema = \json_encode($this->schemaMapper->toJsonSchema($jsonSchema));
+            $self->class = $jsonSchema;
+            $jsonSchema = \json_encode($self->schemaMapper->toJsonSchema($jsonSchema));
         } elseif (!\json_validate($jsonSchema)) {
             throw new InvalidArgumentException('Invalid JSON schema provided');
         }
 
         $self->jsonSchema = $jsonSchema;
 
-        return $this;
+        return $self;
     }
 
     /**
