@@ -14,6 +14,8 @@ use LLM\Agents\LLM\Prompt\PromptInterface;
 
 /**
  * This interceptor is responsible for generating the prompt for the agent.
+ * If the input does not have a prompt, it will generate one using the prompt generator.
+ * After the execution, it will remove temporary messages (which implement LLM\Agents\LLM\Prompt\Chat\TempMessageInterface) from the prompt.
  */
 final readonly class GeneratePromptInterceptor implements ExecutorInterceptorInterface
 {

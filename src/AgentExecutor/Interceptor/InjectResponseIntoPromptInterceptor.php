@@ -11,6 +11,9 @@ use LLM\Agents\AgentExecutor\InterceptorHandler;
 use LLM\Agents\LLM\Response\ChatResponse;
 use LLM\Agents\LLM\Response\ToolCalledResponse;
 
+/**
+ * This interceptor is responsible for injecting the LLM response into the prompt history.
+ */
 final class InjectResponseIntoPromptInterceptor implements ExecutorInterceptorInterface
 {
     public function execute(

@@ -9,6 +9,6 @@ readonly class SolutionMetadata
     public function __construct(
         public MetadataType $type,
         public string $key,
-        public string|\Stringable|int $content,
+        public mixed $content,
     ) {}
 }

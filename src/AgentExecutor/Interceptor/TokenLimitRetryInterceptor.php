@@ -10,6 +10,10 @@ use LLM\Agents\AgentExecutor\ExecutorInterceptorInterface;
 use LLM\Agents\AgentExecutor\InterceptorHandler;
 use LLM\Agents\LLM\Exception\LimitExceededException;
 
+/**
+ * This interceptor is responsible for retrying the execution if the token limit is exceeded.
+ * It will increment the limit by a specified step and retry the execution.
+ */
 final readonly class TokenLimitRetryInterceptor implements ExecutorInterceptorInterface
 {
     public function __construct(
