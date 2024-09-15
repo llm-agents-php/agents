@@ -8,6 +8,9 @@ use LLM\Agents\LLM\Prompt\MessageInterface;
 use LLM\Agents\LLM\Prompt\SerializableInterface;
 use LLM\Agents\LLM\Response\ToolCall;
 
+/**
+ * @internal
+ */
 final class ToolCalledPrompt implements MessageInterface, SerializableInterface
 {
     /**

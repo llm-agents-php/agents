@@ -16,6 +16,9 @@ use LLM\Agents\Tool\SchemaMapperInterface;
 use LLM\Agents\Tool\ToolInterface;
 use LLM\Agents\Tool\ToolRepositoryInterface;
 
+/**
+ * This interceptor is responsible for injecting the tools into the prompt if the agent has linked tools.
+ */
 final readonly class InjectToolsInterceptor implements ExecutorInterceptorInterface
 {
     public function __construct(

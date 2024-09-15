@@ -13,12 +13,7 @@ final class FString implements FormatterInterface
 {
     public static function f(string $string, array $values = []): string
     {
-        $transformed = [];
-        foreach ($values as $key => $value) {
-            $transformed['{' . $key . '}'] = $value;
-        }
-
-        return \strtr($string, $transformed);
+        return (new self())->format($string, $values);
     }
 
     public function format(string $string, array $values = []): string

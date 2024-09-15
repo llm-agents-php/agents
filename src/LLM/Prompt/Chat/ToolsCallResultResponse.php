@@ -6,6 +6,9 @@ namespace LLM\Agents\LLM\Prompt\Chat;
 
 use LLM\Agents\LLM\Response\Response;
 
+/**
+ * @internal
+ */
 final class ToolsCallResultResponse extends Response implements \JsonSerializable
 {
     /**

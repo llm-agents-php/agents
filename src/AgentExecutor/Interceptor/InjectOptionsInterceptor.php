@@ -10,6 +10,9 @@ use LLM\Agents\AgentExecutor\ExecutionInput;
 use LLM\Agents\AgentExecutor\ExecutorInterceptorInterface;
 use LLM\Agents\AgentExecutor\InterceptorHandler;
 
+/**
+ * This interceptor is responsible for injecting the agent's configuration options into the execution options.
+ */
 final readonly class InjectOptionsInterceptor implements ExecutorInterceptorInterface
 {
     public function __construct(

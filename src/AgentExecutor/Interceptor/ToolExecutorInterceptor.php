@@ -14,6 +14,13 @@ use LLM\Agents\LLM\Response\ToolCall;
 use LLM\Agents\LLM\Response\ToolCalledResponse;
 use LLM\Agents\Tool\ToolExecutor;
 
+/**
+ * This interceptor is responsible for calling the tools if LLM asks for it. After calling the tools, it adds the
+ * tools responses to the prompt history and return the result of tools execution to the LLM.
+ *
+ * If the option 'return_tool_result' is set to true, the interceptor will return the tools result instead of adding
+ * it to the prompt.
+ */
 final readonly class ToolExecutorInterceptor implements ExecutorInterceptorInterface
 {
     public function __construct(

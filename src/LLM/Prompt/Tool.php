@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace LLM\Agents\LLM\Prompt;
 
+/**
+ * @internal
+ */
 readonly class Tool
 {
     public function __construct(

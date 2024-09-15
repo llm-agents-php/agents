@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace LLM\Agents\Solution;
 
+/**
+ * Represents a link to another agent.
+ */
 class AgentLink extends Solution
 {
     public function __construct(
