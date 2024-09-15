@@ -22,11 +22,10 @@ use LLM\Agents\Solution\ToolLink;
 class AgentAggregate implements AgentInterface,
                                 HasLinkedAgentsInterface,
                                 HasLinkedToolsInterface,
-                                HasLinkedContextSourcesInterface
+                                HasLinkedContextSourcesInterface,
+                                MetadataAwareInterface
 {
-    /**
-     * @var array<TAssociation>
-     */
+    /** @var array<TAssociation> */
     private array $associations = [];
 
     public function __construct(
@@ -92,7 +91,7 @@ class AgentAggregate implements AgentInterface,
     {
         return \array_values(
             \array_filter(
-                $this->agent->getMetadata(),
+                $this->getMetadata(),
                 static fn(SolutionMetadata $metadata): bool => $metadata->type === MetadataType::Memory,
             ),
         );
@@ -102,7 +101,7 @@ class AgentAggregate implements AgentInterface,
     {
         return \array_values(
             \array_filter(
-                $this->agent->getMetadata(),
+                $this->getMetadata(),
                 static fn(SolutionMetadata $metadata): bool => $metadata->type === MetadataType::Prompt,
             ),
         );
@@ -115,7 +114,7 @@ class AgentAggregate implements AgentInterface,
     {
         return \array_values(
             \array_filter(
-                $this->agent->getMetadata(),
+                $this->getMetadata(),
                 static fn(SolutionMetadata $metadata): bool => $metadata->type === MetadataType::Configuration,
             ),
         );
@@ -128,11 +127,9 @@ class AgentAggregate implements AgentInterface,
         $this->associations[] = $association;
     }
 
-    public function addMetadata(SolutionMetadata ...$metadatum): void
+    public function addMetadata(SolutionMetadata ...$metadata): void
     {
-        foreach ($metadatum as $metadata) {
-            $this->agent->addMetadata($metadata);
-        }
+        $this->agent->addMetadata(...$metadata);
     }
 
     private function validateDependency(Solution $association): void
@@ -144,5 +141,18 @@ class AgentAggregate implements AgentInterface,
                 }
             }
         }
+    }
+
+    public function getMetadata(): array
+    {
+        $metadata = $this->agent->getMetadata();
+
+        foreach ($this->associations as $association) {
+            if ($association instanceof MetadataAwareInterface) {
+                $metadata = \array_merge($metadata, $association->getMetadata());
+            }
+        }
+
+        return $metadata;
     }
 }
