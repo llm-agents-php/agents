@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace LLM\Agents\Solution;
 
-abstract class Solution
+use LLM\Agents\Agent\MetadataAwareInterface;
+
+abstract class Solution implements MetadataAwareInterface
 {
     /**
      * @var array<SolutionMetadata>
@@ -17,9 +19,11 @@ abstract class Solution
         public readonly ?string $description = null,
     ) {}
 
-    public function addMetadata(SolutionMetadata $metadata): void
+    public function addMetadata(SolutionMetadata ...$metadata): void
     {
-        $this->metadata[] = $metadata;
+        foreach ($metadata as $meta) {
+            $this->metadata[] = $meta;
+        }
     }
 
     public function getMetadata(): array
